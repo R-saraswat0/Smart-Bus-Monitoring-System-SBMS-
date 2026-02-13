@@ -1,53 +1,148 @@
+# 🚌 SBMS – Smart Bus Monitoring System
+
+> Digitizing Campus Security & Transport Logistics  
+> A MERN Stack-based real-time bus tracking and monitoring system for campus security and transport administration.
 
 ---
 
-## 📊 Core Concepts Demonstrated
+## 📌 Overview
 
-- RESTful API design
-- Authentication & Role-Based Access Control (RBAC)
-- Real-time state synchronization
-- MongoDB schema modeling
-- Data validation & business logic enforcement
-- CSV export functionality
-- Full-stack architecture design
+**SBMS (Smart Bus Monitoring System)** is a full-stack web application designed to replace manual bus entry registers with a centralized digital system.
+
+The platform enables real-time logging of bus arrivals and departures by security guards and provides powerful analytics dashboards for administrators.
+
+SBMS transforms campus transport operations from paper-based logging into a secure, data-driven monitoring system.
 
 ---
 
-## 🛣️ Future Scope
+## ❗ Problem Statement
 
-### 📱 QR Code Integration
-Scan QR on buses for instant logging.
+The traditional manual logbook system creates multiple operational issues:
 
-### 📍 GPS Tracking Integration
-Live bus tracking on interactive map.
+- ❌ Human errors in handwritten entries  
+- ❌ No searchable historical records  
+- ❌ No analytics or reporting capability  
+- ❌ Time-consuming monthly compilation  
+- ❌ No accountability tracking for guards  
+- ❌ No automated safety monitoring  
 
-### 👨‍👩‍👧 Student/Parent Portal
-Real-time bus arrival notifications.
+Paper records cannot answer:
 
-### 📊 AI-Based Insights
-Predict peak traffic times using historical data.
-
----
-
-## 🎯 Impact
-
-This system:
-- Reduces manual effort by 80%+
-- Eliminates paper dependency
-- Improves campus transport safety
-- Enables data-driven administrative decisions
-- Enhances accountability & transparency
+- How many total trips occurred today?
+- Which bus frequently arrives late?
+- What is the peak traffic hour?
+- Which guard logged a specific entry?
 
 ---
 
-## 👨‍💻 Author
+## 💡 Solution
 
-Developed by: *Your Name*  
-Tech Stack: MERN  
-Purpose: Academic Project / Portfolio Demonstration
+SBMS provides:
+
+- 📡 Real-time digital logging  
+- 🔐 Secure authentication for guards  
+- 📊 Centralized admin dashboard  
+- 📈 Automated reporting & analytics  
+- 🚨 Smart alert system for safety monitoring  
+
+It ensures accuracy, accountability, and operational transparency.
 
 ---
 
-## ⭐ If You Like This Project
+## 🏗️ Technology Stack
 
-Give it a ⭐ on GitHub!
+### 🖥️ Frontend
+- React.js
+- Tailwind CSS
+
+### ⚙️ Backend
+- Node.js
+- Express.js
+
+### 🗄️ Database
+- MongoDB
+
+---
+
+## 🔐 Functional Modules
+
+---
+
+### 🛡️ 1. Security Guard Panel
+
+**Purpose:** Accurate and secure data entry.
+
+#### Features:
+- Secure individual login credentials
+- Bus number dropdown selection
+- Arrival / Departure toggle option
+- Automatic system timestamp (non-editable)
+- Student occupancy logging
+- Recent activity history (last 5 entries)
+
+---
+
+### 📊 2. Admin Dashboard
+
+**Purpose:** Monitoring, management & analytics.
+
+#### Fleet Management
+- Add / remove buses
+- Define bus capacity
+- Update driver information
+
+#### User Management
+- Register security guards
+- Reset credentials
+- Monitor guard activity
+
+#### Live Status Monitoring
+- View buses currently on campus
+- View buses outside campus
+
+#### Reports & Analytics
+- Daily / Weekly / Monthly summaries
+- Peak hour traffic visualization
+- CSV / Excel export functionality
+
+---
+
+## 🚀 Advanced Features (Power Logic)
+
+### 🚨 Capacity Alert System
+If student count exceeds defined bus capacity:
+- Entry is automatically flagged
+- Admin dashboard highlights overcrowding
+
+---
+
+### ⏰ Late Arrival Detection
+If bus arrives after defined threshold time:
+- Entry marked as "LATE"
+- Automatically recorded in analytics
+
+---
+
+### 🔍 Search & Filter
+Admin can filter logs by:
+- Bus number
+- Guard name
+- Date range
+- Arrival/Departure type
+
+---
+
+## 🔄 Process Flow
+
+1. Guard logs into SBMS.
+2. Bus arrives at gate.
+3. Guard selects bus number and logs student count.
+4. System auto-generates timestamp.
+5. Data stored in MongoDB.
+6. Admin dashboard updates instantly.
+7. Reports can be exported anytime.
+
+---
+
+## 📁 Project Structure
+
