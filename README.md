@@ -146,3 +146,9 @@ Admin can filter logs by:
 
 ## 📁 Project Structure
 
+```
+SBMS/
+├── frontend/          # React.js frontend application
+└── backend/           # Node.js backend application
+```
+
