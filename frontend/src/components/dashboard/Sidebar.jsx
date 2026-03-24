@@ -1,42 +1,41 @@
-import { LayoutDashboard, Bus, MapPin, Clock, Users, AlertTriangle, BarChart3, Settings } from 'lucide-react';
+import { Link, useLocation } from "react-router-dom";
 
-export function Sidebar() {
-  const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', active: true },
-    { icon: Bus, label: 'Fleet Status', active: false },
-    { icon: MapPin, label: 'Live Tracking', active: false },
-    { icon: Clock, label: 'Schedule', active: false },
-    { icon: Users, label: 'Guards', active: false },
-    { icon: AlertTriangle, label: 'Alerts', active: false },
-    { icon: BarChart3, label: 'Reports', active: false },
-    { icon: Settings, label: 'Settings', active: false },
-  ];
+export function Sidebar({ brandLabel, brandTitle, brandIcon: BrandIcon, items }) {
+  const location = useLocation();
 
   return (
-    <aside className="w-20 lg:w-64 bg-white border-r border-gray-200 flex flex-col">
-      <div className="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-gray-200">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
-          <Bus className="w-5 h-5 text-white" />
+    <aside className="hidden w-72 flex-col border-r border-slate-200 bg-white xl:flex">
+      <div className="flex h-20 items-center border-b border-slate-200 px-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-900/15">
+          <BrandIcon className="h-5 w-5" />
         </div>
-        <span className="hidden lg:block ml-3 font-semibold text-gray-800 text-lg">SBMS</span>
+        <div className="ml-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal-700">{brandLabel}</p>
+          <p className="text-lg font-semibold text-slate-950">{brandTitle}</p>
+        </div>
       </div>
 
-      <nav className="flex-1 py-6 px-3 lg:px-4">
+      <nav className="flex-1 px-4 py-6">
         <ul className="space-y-2">
-          {menuItems.map((item, index) => (
-            <li key={index}>
-              <button
-                className={`w-full flex items-center justify-center lg:justify-start px-3 py-3 rounded-xl transition-all duration-200 ${
-                  item.active
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30'
-                    : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600'
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="hidden lg:block ml-3 font-medium">{item.label}</span>
-              </button>
-            </li>
-          ))}
+          {items.map((item) => {
+            const isActive = location.pathname === item.to;
+
+            return (
+              <li key={item.label}>
+                <Link
+                  to={item.to}
+                  className={`flex items-center rounded-2xl px-4 py-3 transition ${
+                    isActive
+                      ? "bg-slate-950 text-white shadow-lg shadow-slate-900/15"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+                  }`}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="ml-3 font-medium">{item.label}</span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </aside>

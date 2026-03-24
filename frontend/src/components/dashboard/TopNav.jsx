@@ -1,37 +1,56 @@
-import { Search, Bell, Mail } from 'lucide-react';
+import { Bell, Mail, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
-export function TopNav() {
+export function TopNav({ title, subtitle }) {
+  const { session, logout } = useAuth();
+  const navigate = useNavigate();
+
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
-      <div className="flex-1 max-w-xl">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search buses, routes, guards..."
-            className="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-          />
+    <header className="border-b border-slate-200 bg-white px-6 py-5">
+      <div className="flex flex-wrap items-center justify-between gap-6">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">{title}</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{subtitle}</h1>
         </div>
-      </div>
 
-      <div className="flex items-center gap-3 ml-6">
-        <button className="relative p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
-          <Mail className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full"></span>
-        </button>
-
-        <button className="relative p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
-
-        <div className="flex items-center gap-3 ml-2 pl-4 border-l border-gray-200">
-          <div className="hidden md:block text-right">
-            <p className="text-sm font-semibold text-gray-800">Admin Portal</p>
-            <p className="text-xs text-gray-500">System Manager</p>
+        <div className="flex flex-1 items-center justify-end gap-4">
+          <div className="relative hidden w-full max-w-xl lg:block">
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search buses, routes, guards, or alerts"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-teal-500 focus:bg-white"
+            />
           </div>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
-            <span className="text-white font-semibold text-sm">AD</span>
+
+          <button className="relative rounded-2xl p-3 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950">
+            <Mail className="h-5 w-5" />
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-sky-500" />
+          </button>
+
+          <button className="relative rounded-2xl p-3 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950">
+            <Bell className="h-5 w-5" />
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />
+          </button>
+
+          <div className="flex items-center gap-3 border-l border-slate-200 pl-4">
+            <div className="hidden text-right md:block">
+              <p className="text-sm font-semibold text-slate-950">{session?.name ?? "Campus Operations"}</p>
+              <p className="text-xs text-slate-500">{session?.title ?? "Smart Bus Monitoring System"}</p>
+            </div>
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-900 to-teal-700 text-sm font-semibold text-white shadow-lg shadow-slate-900/15">
+              {session?.name?.slice(0, 2).toUpperCase() ?? "SB"}
+            </div>
+            <button
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+              className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </div>
