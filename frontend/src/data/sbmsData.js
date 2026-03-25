@@ -61,11 +61,11 @@ export const dailyTripData = [
 ];
 
 export const routePerformance = [
-  { route: "Engineering Block", punctuality: "92%", averageOccupancy: "84%", incidents: 1 },
-  { route: "Library", punctuality: "86%", averageOccupancy: "96%", incidents: 3 },
-  { route: "Medical Center", punctuality: "95%", averageOccupancy: "70%", incidents: 0 },
-  { route: "Sports Complex", punctuality: "89%", averageOccupancy: "81%", incidents: 1 },
-  { route: "Hostel Loop", punctuality: "83%", averageOccupancy: "90%", incidents: 2 },
+  { route: "Krishnapuri to GLA", punctuality: "92%", averageOccupancy: "84%", incidents: 1 },
+  { route: "Raya to GLA", punctuality: "86%", averageOccupancy: "96%", incidents: 3 },
+  { route: "Gokul to GLA", punctuality: "95%", averageOccupancy: "70%", incidents: 0 },
+  { route: "Mathura to GLA", punctuality: "89%", averageOccupancy: "81%", incidents: 1 },
+  { route: "Vrindavan to GLA", punctuality: "83%", averageOccupancy: "90%", incidents: 2 },
 ];
 
 export const activeBuses = [
@@ -392,7 +392,7 @@ export const reportCards = [
   },
   {
     title: "Top risk route",
-    value: "Library",
+    value: "via goverdhan chauraha",
     detail: "Highest occupancy pressure and most alert activity in the current cycle.",
   },
 ];

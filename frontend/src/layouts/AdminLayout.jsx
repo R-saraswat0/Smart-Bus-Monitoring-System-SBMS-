@@ -5,7 +5,6 @@ import { TopNav } from "../components/dashboard/TopNav";
 
 const adminItems = [
   { icon: LayoutDashboard, label: "Overview", to: "/admin" },
-  { icon: Shield, label: "Live Monitor", to: "/admin/live" },
   { icon: Bus, label: "Fleet", to: "/admin/fleet" },
   { icon: Users, label: "Guards", to: "/admin/guards" },
   { icon: AlertTriangle, label: "Alerts", to: "/admin/alerts" },

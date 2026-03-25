@@ -1,76 +1,194 @@
-import { Bus, Fuel, ShieldAlert, Wrench } from "lucide-react";
-import { fleet } from "../data/sbmsData";
-
-function getHealthTone(health) {
-  if (health === "warning") return "bg-amber-100 text-amber-700";
-  return "bg-emerald-100 text-emerald-700";
-}
-
-function getStatusTone(status) {
-  if (status === "maintenance-due") return "bg-rose-100 text-rose-700";
-  if (status === "standby") return "bg-slate-100 text-slate-700";
-  return "bg-sky-100 text-sky-700";
-}
+import { Bus, Plus, Trash2, User, Phone, MapPin, Users } from "lucide-react";
+import { useState } from "react";
+import { useData } from "../context/DataContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminFleet() {
+  const { buses, addBus, removeBus } = useData();
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [newBus, setNewBus] = useState({
+    routeStart: "",
+    capacity: "",
+    driverName: "",
+    mobileNumber: "",
+  });
+
+  const handleAddBus = (e) => {
+    e.preventDefault();
+    const nextId = String(buses.length + 1).padStart(3, "0");
+    
+    const busEntry = {
+      busNumber: nextId,
+      route: `${newBus.routeStart} → GLA`,
+      capacity: parseInt(newBus.capacity) || 0,
+      driver: newBus.driverName,
+      mobileNumber: newBus.mobileNumber,
+      status: "active",
+      health: "good"
+    };
+
+    addBus(busEntry);
+    setNewBus({ routeStart: "", capacity: "", driverName: "", mobileNumber: "" });
+    setIsAdding(false);
+  };
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold text-slate-950">Fleet Management</h2>
-        <p className="mt-2 text-slate-600">Vehicle assignments, driver information, maintenance health, and route readiness.</p>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent dark:from-white dark:to-slate-400">
+            Fleet Management
+          </h2>
+          <p className="mt-2 text-slate-600 dark:text-slate-400">
+            Manage your fleet, driver assignments, and routes.
+          </p>
+        </div>
+        <button
+          onClick={() => setIsAdding(!isAdding)}
+          className="glass-button flex items-center gap-2 px-5 py-2.5 w-fit"
+        >
+          <Plus className="h-5 w-5" />
+          {isAdding ? "Cancel" : "Add New Bus"}
+        </button>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
-        {fleet.map((bus) => (
-          <div key={bus.busNumber} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <Bus className="h-5 w-5 text-teal-700" />
-                  <h3 className="text-xl font-semibold text-slate-950">{bus.busNumber}</h3>
+      <AnimatePresence>
+        {isAdding && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, y: -20 }}
+            animate={{ opacity: 1, height: "auto", y: 0 }}
+            exit={{ opacity: 0, height: 0, y: -20 }}
+            className="overflow-hidden"
+          >
+            <form onSubmit={handleAddBus} className="glass-panel p-6 mb-8">
+              <h3 className="text-xl font-semibold mb-4 text-slate-800 dark:text-white">Add Bus Details</h3>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Route Start Location</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="e.g. Mathura City"
+                    value={newBus.routeStart}
+                    onChange={(e) => setNewBus({ ...newBus, routeStart: e.target.value })}
+                    className="glass-input w-full"
+                  />
                 </div>
-                <p className="mt-2 text-slate-600">{bus.route}</p>
-                <p className="mt-1 text-sm text-slate-500">Driver: {bus.driver}</p>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Capacity</label>
+                  <input
+                    required
+                    type="number"
+                    min="1"
+                    placeholder="e.g. 50"
+                    value={newBus.capacity}
+                    onChange={(e) => setNewBus({ ...newBus, capacity: e.target.value })}
+                    className="glass-input w-full"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Driver Name</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="Driver Name"
+                    value={newBus.driverName}
+                    onChange={(e) => setNewBus({ ...newBus, driverName: e.target.value })}
+                    className="glass-input w-full"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Mobile Number</label>
+                  <input
+                    required
+                    type="tel"
+                    placeholder="Mobile Number"
+                    value={newBus.mobileNumber}
+                    onChange={(e) => setNewBus({ ...newBus, mobileNumber: e.target.value })}
+                    className="glass-input w-full"
+                  />
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2 text-xs font-semibold">
-                <span className={`rounded-full px-3 py-1 ${getStatusTone(bus.status)}`}>{bus.status}</span>
-                <span className={`rounded-full px-3 py-1 ${getHealthTone(bus.health)}`}>{bus.health}</span>
+              <div className="mt-6 flex justify-end">
+                <button type="submit" className="glass-button px-6 py-2.5">
+                  Save Bus
+                </button>
               </div>
-            </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-sm text-slate-500">Capacity</p>
-                <p className="mt-2 text-2xl font-semibold text-slate-950">{bus.capacity}</p>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <AnimatePresence>
+          {buses.map((bus) => (
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+              key={bus.busNumber}
+              className="glass-card interactive-card p-6"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-2xl">
+                    <Bus className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">ID: {bus.busNumber}</h3>
+                    <p className="mt-1 flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                      <MapPin className="h-4 w-4 text-emerald-500" />
+                      {bus.route}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => removeBus(bus.busNumber)}
+                  className="glass-button-danger flex items-center gap-2 px-3 py-1.5 text-sm"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Remove Bus
+                </button>
               </div>
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-sm text-slate-500">Plate</p>
-                <p className="mt-2 text-lg font-semibold text-slate-950">{bus.plate}</p>
-              </div>
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-sm text-slate-500">Fuel level</p>
-                <p className="mt-2 flex items-center gap-2 text-2xl font-semibold text-slate-950">
-                  <Fuel className="h-5 w-5 text-amber-600" />
-                  {bus.fuelLevel}
-                </p>
-              </div>
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-sm text-slate-500">Last service</p>
-                <p className="mt-2 flex items-center gap-2 text-lg font-semibold text-slate-950">
-                  <Wrench className="h-5 w-5 text-slate-600" />
-                  {bus.lastService}
-                </p>
-              </div>
-            </div>
 
-            {bus.health === "warning" && (
-              <div className="mt-5 flex items-center gap-2 rounded-2xl bg-amber-50 p-4 text-sm text-amber-800">
-                <ShieldAlert className="h-4 w-4" />
-                Review this bus before the next heavy-load campus cycle.
+              <div className="mt-8 grid gap-4 grid-cols-2 sm:grid-cols-3">
+                <div className="bg-white/40 dark:bg-slate-800/40 p-4 rounded-2xl flex flex-col justify-center border border-white/20 dark:border-slate-700/50">
+                  <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                    <Users className="h-4 w-4" /> Capacity
+                  </p>
+                  <p className="mt-2 text-xl font-semibold text-slate-900 dark:text-white">
+                    {bus.capacity} seats
+                  </p>
+                </div>
+                <div className="bg-white/40 dark:bg-slate-800/40 p-4 rounded-2xl flex flex-col justify-center border border-white/20 dark:border-slate-700/50">
+                  <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                    <User className="h-4 w-4" /> Driver
+                  </p>
+                  <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white truncate">
+                    {bus.driver || "Unassigned"}
+                  </p>
+                </div>
+                <div className="col-span-2 sm:col-span-1 bg-white/40 dark:bg-slate-800/40 p-4 rounded-2xl flex flex-col justify-center border border-white/20 dark:border-slate-700/50">
+                  <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                    <Phone className="h-4 w-4" /> Mobile
+                  </p>
+                  <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white truncate">
+                    {bus.mobileNumber || "N/A"}
+                  </p>
+                </div>
               </div>
-            )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+        {buses.length === 0 && (
+          <div className="col-span-2 p-12 text-center glass-panel">
+            <Bus className="h-12 w-12 mx-auto text-slate-400 mb-4 opacity-50" />
+            <h3 className="text-xl font-medium text-slate-700 dark:text-slate-300">No buses in fleet</h3>
+            <p className="mt-2 text-slate-500">Add a new bus to see it listed here.</p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
