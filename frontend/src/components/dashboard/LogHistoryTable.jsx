@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Download, Filter } from "lucide-react";
+import { useData } from "../../context/DataContext";
 
 export function LogHistoryTable({ logs }) {
   const [filterType, setFilterType] = useState("all");
@@ -23,11 +24,16 @@ export function LogHistoryTable({ logs }) {
     return type === "entry" ? "bg-sky-100 text-sky-700" : "bg-violet-100 text-violet-700";
   };
 
+  const { searchQuery } = useData();
+
   const filteredLogs = logs.filter((log) => {
     const matchesType = filterType === "all" || log.type === filterType;
     const matchesBus = searchBus === "" || log.busNumber.toLowerCase().includes(searchBus.toLowerCase());
     const matchesGuard = searchGuard === "" || log.guard.toLowerCase().includes(searchGuard.toLowerCase());
-    return matchesType && matchesBus && matchesGuard;
+    const matchesGlobal = !searchQuery || 
+      log.busNumber.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      log.guard.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesType && matchesBus && matchesGuard && matchesGlobal;
   });
 
   return (

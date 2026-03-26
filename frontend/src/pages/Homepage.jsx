@@ -268,6 +268,89 @@ export default function Homepage() {
             </div>
           </div>
         </section>
+
+        <section id="faq" className="px-6 py-20 bg-slate-950 text-white shadow-2xl shadow-slate-900/20 rounded-t-[3rem] mt-10">
+          <div className="mx-auto max-w-7xl">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-center mb-16">Frequently Asked Questions</h2>
+            
+            <div className="grid gap-12 md:grid-cols-2">
+              <div>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-3 bg-teal-500/20 rounded-2xl">
+                    <Shield className="h-6 w-6 text-teal-400" />
+                  </div>
+                  <h3 className="text-2xl font-semibold">For Security Guards</h3>
+                </div>
+                <div className="space-y-8">
+                  <div>
+                    <h4 className="font-medium text-lg text-teal-300">How do I log a bus arrival or departure?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Navigate to the Log Entry panel, select the bus ID, your gate, and the passenger count. The system will automatically capture the timestamp and validate the capacity.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg text-teal-300">How can I see past buses that passed my gate?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Go to the History panel. You can use the search bar filters to see specific bus records and verify their recorded arrival times.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg text-teal-300">Where do I read messages from the administration?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Click on the Mail icon in the top navigation bar or select 'Messages' from your sidebar to open your inbox.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg text-teal-300">What happens if a bus arrives overcrowded?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Log the actual number of passengers. If it exceeds the bus capacity, the system will automatically trigger a high-severity alert for the Admin.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg text-teal-300">How are my shift hours tracked?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Admins assign your shift and gate details. You can view your current status and accumulated logs for the day on your Guard Overview dashboard.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-3 bg-blue-500/20 rounded-2xl">
+                    <Activity className="h-6 w-6 text-blue-400" />
+                  </div>
+                  <h3 className="text-2xl font-semibold">For Administrators</h3>
+                </div>
+                <div className="space-y-8">
+                  <div>
+                    <h4 className="font-medium text-lg text-blue-300">How do I add a new bus to the system?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Open the Fleet Management module and click "Add New Bus." Fill in the capacity, route, and driver details to deploy it instantly.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg text-blue-300">Where do I review crowding and delay alerts?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Check the Alerts Center or click the Bell icon in the top navigation. High-severity capacity alerts and medium-severity delays are logged here.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg text-blue-300">How can I send instructions to guards?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Navigate to the Messages tab. You can compose a memo, select a specific guard or broadcast to all guards simultaneously.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg text-blue-300">How do I search for a specific bus history?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Use the global search bar at the top of your dashboard, or scroll to the Log History Table on the Reports page to filter by Bus Number.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-lg text-blue-300">How are guards assigned to specific gates?</h4>
+                    <p className="mt-3 text-slate-400 leading-relaxed">Go to Guard Management to add or edit profiles. You can assign them specifically to "gate no. 1", "parking gate", etc.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-20 text-center pb-8 border-t border-slate-800 pt-12">
+              <h3 className="text-xl font-medium text-slate-300 mb-6">Help us improve Campus Mobility!</h3>
+              <a 
+                href="#" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-2xl bg-teal-500 px-8 py-4 text-lg font-bold text-slate-950 shadow-xl transition-all hover:-translate-y-1 hover:bg-teal-400 hover:shadow-teal-500/25"
+              >
+                Share your feedback after visiting this website
+              </a>
+            </div>
+
+          </div>
+        </section>
       </main>
     </div>
   );

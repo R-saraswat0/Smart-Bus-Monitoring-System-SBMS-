@@ -1,10 +1,16 @@
 import { Bell, Mail, Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useData } from "../../context/DataContext";
 
 export function TopNav({ title, subtitle }) {
   const { session, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { searchQuery, setSearchQuery } = useData();
+
+  const isAdmin = location.pathname.startsWith("/admin");
+  const basePath = isAdmin ? "/admin" : "/guard";
 
   return (
     <header className="border-b border-slate-200 bg-white px-6 py-5">
@@ -20,18 +26,26 @@ export function TopNav({ title, subtitle }) {
             <input
               type="text"
               placeholder="Search buses, routes, guards, or alerts"
+              value={searchQuery || ""}
+              onChange={(e) => setSearchQuery && setSearchQuery(e.target.value)}
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-teal-500 focus:bg-white"
             />
           </div>
 
-          <button className="relative rounded-2xl p-3 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950">
+          <button 
+            onClick={() => navigate(`${basePath}/messages`)}
+            className="relative rounded-2xl p-3 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+          >
             <Mail className="h-5 w-5" />
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-sky-500" />
           </button>
 
-          <button className="relative rounded-2xl p-3 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950">
+          <button 
+            onClick={() => isAdmin ? navigate("/admin/alerts") : null}
+            className={`relative rounded-2xl p-3 transition ${isAdmin ? "text-slate-600 hover:bg-slate-100 hover:text-slate-950 cursor-pointer" : "text-slate-400 cursor-default"}`}
+          >
             <Bell className="h-5 w-5" />
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />
+            {isAdmin && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />}
           </button>
 
           <div className="flex items-center gap-3 border-l border-slate-200 pl-4">

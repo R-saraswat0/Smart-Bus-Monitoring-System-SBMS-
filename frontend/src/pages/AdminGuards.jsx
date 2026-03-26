@@ -1,16 +1,27 @@
 import { BadgeCheck, Clock3, Shield, Users, Plus, Trash2, MapPin } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useData } from "../context/DataContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminGuards() {
-  const { guards, addGuard, removeGuard } = useData();
+  const { guards, addGuard, removeGuard, searchQuery } = useData();
+
+  const filteredGuards = useMemo(() => {
+    if (!searchQuery) return guards;
+    const lowerQuery = searchQuery.toLowerCase();
+    return guards.filter(guard =>
+      guard.name.toLowerCase().includes(lowerQuery) ||
+      guard.id.toLowerCase().includes(lowerQuery) ||
+      guard.gate.toLowerCase().includes(lowerQuery)
+    );
+  }, [guards, searchQuery]);
+
   const [isAdding, setIsAdding] = useState(false);
   const [newGuard, setNewGuard] = useState({
     name: "",
     id: "",
     dutyTime: "Morning Shift",
-    destination: "Main Gate",
+    destination: "gate no. 1",
   });
 
   const handleAddGuard = (e) => {
@@ -26,7 +37,7 @@ export default function AdminGuards() {
     };
 
     addGuard(guardEntry);
-    setNewGuard({ name: "", id: "", dutyTime: "Morning Shift", destination: "Main Gate" });
+    setNewGuard({ name: "", id: "", dutyTime: "Morning Shift", destination: "gate no. 1" });
     setIsAdding(false);
   };
 
@@ -107,11 +118,10 @@ export default function AdminGuards() {
                     onChange={(e) => setNewGuard({ ...newGuard, destination: e.target.value })}
                     className="glass-input w-full appearance-none"
                   >
-                    <option>Main Gate</option>
-                    <option>North Gate</option>
-                    <option>South Gate</option>
-                    <option>East Gate</option>
-                    <option>West Gate</option>
+                    <option>gate no. 1</option>
+                    <option>gate no. 2</option>
+                    <option>gate no. 3</option>
+                    <option>parking gate</option>
                   </select>
                 </div>
               </div>
@@ -151,7 +161,7 @@ export default function AdminGuards() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <AnimatePresence>
-          {guards.map((guard) => (
+          {filteredGuards.map((guard) => (
             <motion.div
               layout
               initial={{ opacity: 0, scale: 0.95 }}
@@ -200,7 +210,7 @@ export default function AdminGuards() {
           ))}
         </AnimatePresence>
         
-        {guards.length === 0 && (
+        {filteredGuards.length === 0 && (
           <div className="col-span-2 p-12 text-center glass-panel">
             <Users className="h-12 w-12 mx-auto text-slate-400 mb-4 opacity-50" />
             <h3 className="text-xl font-medium text-slate-700 dark:text-slate-300">No guards assigned</h3>

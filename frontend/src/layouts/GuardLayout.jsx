@@ -1,4 +1,4 @@
-import { ClipboardList, History, House, Shield } from "lucide-react";
+import { ClipboardList, History, House, Shield, MessageSquare } from "lucide-react";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "../components/dashboard/Sidebar";
 import { TopNav } from "../components/dashboard/TopNav";
@@ -7,6 +7,7 @@ const guardItems = [
   { icon: House, label: "Overview", to: "/guard" },
   { icon: ClipboardList, label: "Log Entry", to: "/guard/log-entry" },
   { icon: History, label: "History", to: "/guard/history" },
+  { icon: MessageSquare, label: "Messages", to: "/guard/messages" },
 ];
 
 export default function GuardLayout() {

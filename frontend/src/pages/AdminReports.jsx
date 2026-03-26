@@ -1,5 +1,6 @@
 import { BarChart3, Download, FileSpreadsheet, TrendingUp } from "lucide-react";
 import { DailyTripChart, PeakHourChart } from "../components/dashboard/Charts";
+import { LogHistoryTable } from "../components/dashboard/LogHistoryTable";
 import { dailyTripData, reportCards, routePerformance } from "../data/sbmsData";
 import { useData } from "../context/DataContext";
 import { useMemo } from "react";
@@ -124,6 +125,10 @@ export default function AdminReports() {
             <p className="mt-3 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">This route has the highest occupancy pressure and the most incident activity based on recent sensor data.</p>
           </div>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <LogHistoryTable logs={logs} />
       </div>
     </div>
   );
