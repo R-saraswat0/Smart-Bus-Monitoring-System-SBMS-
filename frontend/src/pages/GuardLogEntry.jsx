@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { Bus, CheckCircle2, Clock3, ShieldAlert, Users } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { busLogs, fleet, guardProfile } from "../data/sbmsData";
+import { Bus, CheckCircle2, Clock3, ShieldAlert, Users, LogIn, LogOut, ArrowRight } from "lucide-react";
+import { useData } from "../context/DataContext";
+import { guardProfile } from "../data/sbmsData";
 
 function getCurrentClock() {
   return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -12,197 +12,240 @@ function getCurrentDate() {
 }
 
 export default function GuardLogEntry() {
-  const [logs, setLogs] = useState(busLogs);
+  const { buses, addLog, addAlert, logs, updateBus } = useData();
+  const [mode, setMode] = useState("arrival"); // 'arrival' or 'departure'
   const [form, setForm] = useState({
-    busNumber: fleet[0]?.busNumber ?? "",
-    type: "entry",
+    busNumber: buses[0]?.busNumber ?? "",
     occupancy: "0",
+    time: getCurrentClock(),
+    isLate: false,
   });
 
   const selectedBus = useMemo(
-    () => fleet.find((bus) => bus.busNumber === form.busNumber) ?? fleet[0],
-    [form.busNumber],
+    () => buses.find((bus) => bus.busNumber === form.busNumber) ?? buses[0],
+    [buses, form.busNumber],
   );
 
   const recentLogs = logs.slice(0, 5);
   const occupancy = Number(form.occupancy || 0);
-  const isOverCapacity = occupancy > (selectedBus?.capacity ?? 0);
+  const capacity = selectedBus?.capacity ?? 0;
+  const isOverCapacity = occupancy > capacity;
 
   function handleSubmit(event) {
     event.preventDefault();
-
     if (!selectedBus) return;
+
+    // Capacity Logic: Guard cannot manually exceed capacity without alert.
+    // If student count > capacity -> Auto-trigger capacity alert. The system handles validation automatically.
+    if (isOverCapacity) {
+      const newAlert = {
+        id: `ALT-${Math.floor(Math.random() * 900) + 100}`,
+        title: `Capacity exceeded on ${selectedBus.busNumber}`,
+        severity: "high",
+        busNumber: selectedBus.busNumber,
+        time: form.time,
+        owner: guardProfile.name,
+        description: `Occupancy reached ${occupancy} against a capacity of ${capacity} on the ${selectedBus.route} route during ${mode}.`,
+      };
+      addAlert(newAlert);
+    }
+
+    const logStatus = isOverCapacity ? "overcrowded" : form.isLate ? "late" : "on-time";
+    const busStatus = isOverCapacity ? "overcrowded" : mode === "arrival" ? (form.isLate ? "late" : "on-campus") : "departed";
 
     const newLog = {
       id: `LOG-${1000 + logs.length + 1}`,
       busNumber: selectedBus.busNumber,
       guard: guardProfile.name,
-      type: form.type,
-      time: getCurrentClock(),
+      type: mode === "arrival" ? "entry" : "exit",
+      time: form.time,
       date: getCurrentDate(),
       gate: guardProfile.gate,
       occupancy,
       capacity: selectedBus.capacity,
-      status: isOverCapacity ? "overcrowded" : "on-time",
+      status: logStatus,
     };
 
-    setLogs((current) => [newLog, ...current]);
-    setForm((current) => ({ ...current, occupancy: "0" }));
+    addLog(newLog);
+    updateBus(selectedBus.busNumber, { status: busStatus });
+
+    setForm((current) => ({
+      ...current,
+      occupancy: "0",
+      time: getCurrentClock(),
+      isLate: false,
+    }));
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-700">New log entry</p>
-            <h2 className="mt-2 text-2xl font-semibold text-slate-950">Record bus movement</h2>
-            <p className="mt-3 text-slate-600">Choose a bus, select arrival or departure, and save the log for the active gate.</p>
+    <div className="grid gap-8 xl:grid-cols-[1fr_1fr] animate-in fade-in duration-500">
+      <div className="space-y-6">
+        <div className="glass-card p-6 shadow-sm border border-white/20 dark:border-white/10">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-600 dark:text-teal-400">Gate Operations</p>
+              <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">Record Log</h2>
+              <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">Select arrival or departure flow to update campus transport status.</p>
+            </div>
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400">
+              <Bus className="h-7 w-7" />
+            </div>
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-teal-800">
-            <Bus className="h-6 w-6" />
-          </div>
-        </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <label htmlFor="busNumber" className="text-sm font-semibold text-slate-700">Bus number</label>
-            <select
-              id="busNumber"
-              value={form.busNumber}
-              onChange={(event) => setForm((current) => ({ ...current, busNumber: event.target.value }))}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-teal-500 focus:bg-white"
+          <div className="mt-8 flex rounded-2xl bg-slate-100/50 dark:bg-slate-800/50 p-1.5 backdrop-blur-md">
+            <button
+              type="button"
+              onClick={() => setMode("arrival")}
+              className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold transition-all ${
+                mode === "arrival"
+                  ? "bg-white dark:bg-slate-700 text-teal-700 dark:text-teal-400 shadow-sm"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"
+              }`}
             >
-              {fleet.map((bus) => (
-                <option key={bus.busNumber} value={bus.busNumber}>
-                  {bus.busNumber} - {bus.route}
-                </option>
-              ))}
-            </select>
+              <LogIn className="h-4 w-4" /> Bus Arrival
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("departure")}
+              className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold transition-all ${
+                mode === "departure"
+                  ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-400 shadow-sm"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-300"
+              }`}
+            >
+              <LogOut className="h-4 w-4" /> Bus Departure
+            </button>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2">
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <label htmlFor="type" className="text-sm font-semibold text-slate-700">Movement type</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Select Bus</label>
               <select
-                id="type"
-                value={form.type}
-                onChange={(event) => setForm((current) => ({ ...current, type: event.target.value }))}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-teal-500 focus:bg-white"
+                value={form.busNumber}
+                onChange={(event) => setForm((current) => ({ ...current, busNumber: event.target.value }))}
+                className="glass-input w-full appearance-none font-semibold text-slate-900 dark:text-white"
               >
-                <option value="entry">Arrival / Entry</option>
-                <option value="exit">Departure / Exit</option>
+                {buses.map((bus) => (
+                  <option key={bus.busNumber} value={bus.busNumber} className="text-slate-900">
+                    {bus.busNumber} - {bus.route}
+                  </option>
+                ))}
               </select>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="occupancy" className="text-sm font-semibold text-slate-700">Student occupancy</label>
-              <input
-                id="occupancy"
-                type="number"
-                min="0"
-                value={form.occupancy}
-                onChange={(event) => setForm((current) => ({ ...current, occupancy: event.target.value }))}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-teal-500 focus:bg-white"
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Number of Students</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="0"
+                    value={form.occupancy}
+                    onChange={(event) => setForm((current) => ({ ...current, occupancy: event.target.value }))}
+                    className="glass-input w-full font-semibold text-slate-900 dark:text-white pl-11"
+                  />
+                  <Users className="h-5 w-5 absolute left-4 top-3 text-slate-400" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Log Time</label>
+                <div className="relative">
+                  <input
+                    type="time"
+                    value={form.time}
+                    onChange={(event) => setForm((current) => ({ ...current, time: event.target.value }))}
+                    className="glass-input w-full font-semibold text-slate-900 dark:text-white pl-11"
+                  />
+                  <Clock3 className="h-5 w-5 absolute left-4 top-3 text-slate-400" />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-4 rounded-xl border border-white/20 dark:border-white/5 bg-slate-50/50 dark:bg-slate-800/30">
+              <input 
+                id="isLate" 
+                type="checkbox" 
+                checked={form.isLate}
+                onChange={(e) => setForm(c => ({ ...c, isLate: e.target.checked }))}
+                className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-600 dark:bg-slate-900 dark:border-slate-700"
               />
+              <label htmlFor="isLate" className="font-semibold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                Mark as Late {mode === "arrival" ? "Arrival" : "Departure"}
+              </label>
             </div>
-          </div>
 
-          <div className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:grid-cols-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Capacity</p>
-              <p className="mt-2 text-xl font-semibold text-slate-950">{selectedBus?.capacity ?? "--"}</p>
+            <div className="grid gap-4 rounded-2xl border border-white/20 dark:border-white/5 bg-white/40 dark:bg-slate-800/40 p-5 sm:grid-cols-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Capacity</p>
+                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{capacity || "--"}</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Timestamp</p>
+                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{form.time || getCurrentClock()}</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Status</p>
+                <p className={`mt-2 text-sm font-bold uppercase tracking-wide px-2 py-1 inline-block rounded-md ${isOverCapacity ? "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400" : "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"}`}>
+                  {isOverCapacity ? "Capacity Alert" : "Clear"}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Timestamp</p>
-              <p className="mt-2 text-xl font-semibold text-slate-950">{getCurrentClock()}</p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Current status</p>
-              <p className={`mt-2 text-xl font-semibold ${isOverCapacity ? "text-rose-600" : "text-emerald-600"}`}>
-                {isOverCapacity ? "Over capacity" : "Within limit"}
-              </p>
-            </div>
-          </div>
 
-          <Button type="submit" size="lg" className="w-full bg-slate-900 text-white hover:bg-slate-800">
-            Save log entry
-          </Button>
-        </form>
+            <button type="submit" className="glass-button w-full flex items-center justify-center gap-2 py-3.5 text-lg shadow-lg">
+              Confirm {mode === "arrival" ? "Arrival" : "Departure"} <ArrowRight className="h-5 w-5" />
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="space-y-6">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <h2 className="text-2xl font-semibold text-slate-950">Instant guard feedback</h2>
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl bg-slate-950 p-5 text-white">
-              <Clock3 className="h-5 w-5 text-teal-300" />
-              <p className="mt-4 text-sm text-slate-300">Auto timestamp</p>
-              <p className="mt-2 text-2xl font-semibold">{getCurrentClock()}</p>
-            </div>
-            <div className="rounded-2xl bg-teal-50 p-5">
-              <Users className="h-5 w-5 text-teal-800" />
-              <p className="mt-4 text-sm text-slate-600">Recorded occupancy</p>
-              <p className="mt-2 text-2xl font-semibold text-slate-950">{occupancy}</p>
-            </div>
-            <div className={`rounded-2xl p-5 ${isOverCapacity ? "bg-rose-50" : "bg-emerald-50"}`}>
-              <ShieldAlert className={`h-5 w-5 ${isOverCapacity ? "text-rose-700" : "text-emerald-700"}`} />
-              <p className="mt-4 text-sm text-slate-600">Safety check</p>
-              <p className={`mt-2 text-2xl font-semibold ${isOverCapacity ? "text-rose-700" : "text-emerald-700"}`}>
-                {isOverCapacity ? "Alert" : "Clear"}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="glass-card p-6 shadow-sm border border-white/20 dark:border-white/10">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-semibold text-slate-950">Recent activity</h2>
-              <p className="mt-2 text-sm text-slate-600">Latest five logs for quick verification.</p>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Recent Log History</h2>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Your latest entries at the gate.</p>
             </div>
-            <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-              {recentLogs.length} records
+            <div className="rounded-full bg-slate-100/50 dark:bg-slate-800/50 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 border border-white/40 dark:border-white/5">
+              {recentLogs.length} logs
             </div>
           </div>
 
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 flex flex-col gap-4">
             {recentLogs.map((log) => (
-              <div key={log.id} className="rounded-2xl border border-slate-200 p-4">
+              <div key={log.id} className="rounded-2xl border border-white/30 dark:border-white/10 bg-white/40 dark:bg-slate-800/40 p-4 shadow-sm backdrop-blur-md hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors">
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-lg font-semibold text-slate-950">{log.busNumber}</p>
-                    <p className="mt-1 text-sm text-slate-500">{log.gate} - {log.date}</p>
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-xl ${log.type === "entry" ? "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400" : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"}`}>
+                      {log.type === "entry" ? <LogIn className="h-5 w-5" /> : <LogOut className="h-5 w-5" />}
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-slate-900 dark:text-white">{log.busNumber} <span className="text-sm font-medium text-slate-500 opacity-80">({log.type === "entry" ? "Arrival" : "Departure"})</span></p>
+                      <p className="mt-0.5 text-sm font-medium text-slate-500 dark:text-slate-400">{log.gate} • {log.date} @ {log.time}</p>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2 text-xs font-semibold">
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{log.type}</span>
+                  <div className="flex flex-col items-end gap-2">
                     <span
-                      className={`rounded-full px-3 py-1 ${
+                      className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${
                         log.status === "overcrowded"
-                          ? "bg-rose-100 text-rose-700"
+                          ? "bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-900/30 dark:border-rose-900/50 dark:text-rose-400"
                           : log.status === "late"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-emerald-100 text-emerald-700"
+                          ? "bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-900/30 dark:border-amber-900/50 dark:text-amber-400"
+                          : "bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:border-emerald-900/50 dark:text-emerald-400"
                       }`}
                     >
-                      {log.status}
+                      {log.status === "overcrowded" ? "Alert" : log.status}
+                    </span>
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                      <Users className="inline h-3 w-3 mr-1" />{log.occupancy}/{log.capacity}
                     </span>
                   </div>
                 </div>
-                <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-600">
-                  <span>{log.time}</span>
-                  <span>Guard: {log.guard}</span>
-                  <span>Occupancy: {log.occupancy}/{log.capacity}</span>
-                </div>
               </div>
             ))}
-          </div>
-
-          <div className="mt-6 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
-            <p className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-              Logs are still frontend-only state for now, but the workflow is separated and ready for backend wiring.
-            </p>
+            {recentLogs.length === 0 && (
+              <p className="text-center text-sm text-slate-500 py-4">No recent logs recorded by you.</p>
+            )}
           </div>
         </div>
       </div>
