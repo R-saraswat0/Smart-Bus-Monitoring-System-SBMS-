@@ -338,21 +338,21 @@ export const guards = [
 export const alerts = [
   {
     id: "ALT-210",
-    title: "Capacity exceeded on BUS-205",
+    title: "Today 5 buses out of capacity",
     severity: "high",
-    busNumber: "BUS-205",
+    busNumber: "Multiple",
     time: "09:22 AM",
     owner: "Transport Admin",
-    description: "Occupancy reached 52 against a capacity of 50 on the Library route.",
+    description: "Occupancy reached over capacity limits on 5 different bus rotations today.",
   },
   {
     id: "ALT-211",
-    title: "Late arrival on BUS-412",
+    title: "Today 3 buses late",
     severity: "medium",
-    busNumber: "BUS-412",
+    busNumber: "Multiple",
     time: "09:42 AM",
     owner: "Operations Team",
-    description: "Bus crossed the delay threshold while entering through the main gate.",
+    description: "Three buses have crossed the delay threshold while entering through the gates.",
   },
   {
     id: "ALT-212",
@@ -407,7 +407,6 @@ export const gateActivity = [
 export const quickActions = [
   { title: "Log new arrival", href: "/guard/log-entry", description: "Record bus entry or exit details." },
   { title: "Review recent logs", href: "/guard/history", description: "Check the latest bus movements by gate." },
-  { title: "Monitor live status", href: "/admin/live", description: "See buses currently inside campus." },
   { title: "Open alert center", href: "/admin/alerts", description: "Review overload and delay exceptions." },
 ];
 

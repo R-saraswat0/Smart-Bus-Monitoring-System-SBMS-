@@ -1,4 +1,4 @@
-import { AlertTriangle, BarChart3, Bus, LayoutDashboard, Shield, Users } from "lucide-react";
+import { AlertTriangle, BarChart3, Bus, LayoutDashboard, Shield, Users, MessageSquare } from "lucide-react";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "../components/dashboard/Sidebar";
 import { TopNav } from "../components/dashboard/TopNav";
@@ -8,6 +8,7 @@ const adminItems = [
   { icon: Bus, label: "Fleet", to: "/admin/fleet" },
   { icon: Users, label: "Guards", to: "/admin/guards" },
   { icon: AlertTriangle, label: "Alerts", to: "/admin/alerts" },
+  { icon: MessageSquare, label: "Messages", to: "/admin/messages" },
   { icon: BarChart3, label: "Reports", to: "/admin/reports" },
 ];
 

@@ -1,10 +1,20 @@
 import { Bus, Plus, Trash2, User, Phone, MapPin, Users } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useData } from "../context/DataContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminFleet() {
-  const { buses, addBus, removeBus } = useData();
+  const { buses, addBus, removeBus, searchQuery } = useData();
+
+  const filteredBuses = useMemo(() => {
+    if (!searchQuery) return buses;
+    const lowerQuery = searchQuery.toLowerCase();
+    return buses.filter(bus => 
+      bus.busNumber.toLowerCase().includes(lowerQuery) ||
+      bus.route.toLowerCase().includes(lowerQuery) ||
+      (bus.driver || "").toLowerCase().includes(lowerQuery)
+    );
+  }, [buses, searchQuery]);
 
   const [isAdding, setIsAdding] = useState(false);
   const [newBus, setNewBus] = useState({
@@ -122,7 +132,7 @@ export default function AdminFleet() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <AnimatePresence>
-          {buses.map((bus) => (
+          {filteredBuses.map((bus) => (
             <motion.div
               layout
               initial={{ opacity: 0, scale: 0.95 }}
@@ -182,7 +192,7 @@ export default function AdminFleet() {
             </motion.div>
           ))}
         </AnimatePresence>
-        {buses.length === 0 && (
+        {filteredBuses.length === 0 && (
           <div className="col-span-2 p-12 text-center glass-panel">
             <Bus className="h-12 w-12 mx-auto text-slate-400 mb-4 opacity-50" />
             <h3 className="text-xl font-medium text-slate-700 dark:text-slate-300">No buses in fleet</h3>

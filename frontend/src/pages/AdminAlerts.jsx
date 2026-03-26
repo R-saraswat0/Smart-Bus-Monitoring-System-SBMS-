@@ -9,12 +9,21 @@ function getSeverityTone(severity) {
 }
 
 export default function AdminAlerts() {
-  const { alerts: allAlerts } = useData();
+  const { alerts: allAlerts, searchQuery } = useData();
 
   // Remove Fuel Alert option
   const alerts = useMemo(() => {
-    return allAlerts.filter(a => !a.title.toLowerCase().includes("fuel"));
-  }, [allAlerts]);
+    let filtered = allAlerts.filter(a => !a.title.toLowerCase().includes("fuel"));
+    if (searchQuery) {
+      const lowerQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter(a => 
+        a.title.toLowerCase().includes(lowerQuery) ||
+        a.description.toLowerCase().includes(lowerQuery) ||
+        a.busNumber.toLowerCase().includes(lowerQuery)
+      );
+    }
+    return filtered;
+  }, [allAlerts, searchQuery]);
 
   const highSeverityCount = alerts.filter((alert) => alert.severity === "high").length;
   const newestAlertTime = alerts.length > 0 ? alerts[0].time : "N/A";

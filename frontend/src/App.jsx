@@ -9,9 +9,11 @@ import AdminFleet from "./pages/AdminFleet";
 import AdminGuards from "./pages/AdminGuards";
 import AdminOverview from "./pages/AdminOverview";
 import AdminReports from "./pages/AdminReports";
+import AdminMessages from "./pages/AdminMessages";
 import GuardHistory from "./pages/GuardHistory";
 import GuardLogEntry from "./pages/GuardLogEntry";
 import GuardOverview from "./pages/GuardOverview";
+import GuardMessages from "./pages/GuardMessages";
 import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
 
@@ -29,6 +31,7 @@ export default function App() {
                 <Route index element={<GuardOverview />} />
                 <Route path="log-entry" element={<GuardLogEntry />} />
                 <Route path="history" element={<GuardHistory />} />
+                <Route path="messages" element={<GuardMessages />} />
               </Route>
             </Route>
 
@@ -39,6 +42,7 @@ export default function App() {
                 <Route path="guards" element={<AdminGuards />} />
                 <Route path="alerts" element={<AdminAlerts />} />
                 <Route path="reports" element={<AdminReports />} />
+                <Route path="messages" element={<AdminMessages />} />
               </Route>
             </Route>
           </Routes>
