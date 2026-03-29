@@ -92,12 +92,12 @@ export default function Homepage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button asChild size="lg" className="bg-slate-900 text-white hover:bg-slate-800">
                   <Link to={session?.role === "guard" ? "/guard/log-entry" : "/login/guard"}>
-                    Launch guard workflow
-                    <ArrowRight className="h-4 w-4" />
+                    Start Guard Workflow
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-teal-300 text-teal-800 hover:bg-teal-50">
-                  <Link to={session?.role === "admin" ? "/admin" : "/login/admin"}>See admin analytics</Link>
+                  <Link to={session?.role === "admin" ? "/admin/reports" : "/login/admin"}>View Admin Reports</Link>
                 </Button>
               </div>
 
@@ -283,23 +283,23 @@ export default function Homepage() {
                 </div>
                 <div className="space-y-8">
                   <div>
-                    <h4 className="font-medium text-lg text-teal-300">How do I log a bus arrival or departure?</h4>
+                    <h4 className="font-medium text-lg text-teal-200">How do I log a bus arrival or departure?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Navigate to the Log Entry panel, select the bus ID, your gate, and the passenger count. The system will automatically capture the timestamp and validate the capacity.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg text-teal-300">How can I see past buses that passed my gate?</h4>
+                    <h4 className="font-medium text-lg text-teal-200">How can I see past buses that passed my gate?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Go to the History panel. You can use the search bar filters to see specific bus records and verify their recorded arrival times.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg text-teal-300">Where do I read messages from the administration?</h4>
+                    <h4 className="font-medium text-lg text-teal-200">Where do I read messages from the administration?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Click on the Mail icon in the top navigation bar or select 'Messages' from your sidebar to open your inbox.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg text-teal-300">What happens if a bus arrives overcrowded?</h4>
+                    <h4 className="font-medium text-lg text-teal-200">What happens if a bus arrives overcrowded?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Log the actual number of passengers. If it exceeds the bus capacity, the system will automatically trigger a high-severity alert for the Admin.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg text-teal-300">How are my shift hours tracked?</h4>
+                    <h4 className="font-medium text-lg text-teal-200">How are my shift hours tracked?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Admins assign your shift and gate details. You can view your current status and accumulated logs for the day on your Guard Overview dashboard.</p>
                   </div>
                 </div>
@@ -314,23 +314,23 @@ export default function Homepage() {
                 </div>
                 <div className="space-y-8">
                   <div>
-                    <h4 className="font-medium text-lg text-blue-300">How do I add a new bus to the system?</h4>
+                    <h4 className="font-medium text-lg text-blue-200">How do I add a new bus to the system?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Open the Fleet Management module and click "Add New Bus." Fill in the capacity, route, and driver details to deploy it instantly.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg text-blue-300">Where do I review crowding and delay alerts?</h4>
+                    <h4 className="font-medium text-lg text-blue-200">Where do I review crowding and delay alerts?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Check the Alerts Center or click the Bell icon in the top navigation. High-severity capacity alerts and medium-severity delays are logged here.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg text-blue-300">How can I send instructions to guards?</h4>
+                    <h4 className="font-medium text-lg text-blue-200">How can I send instructions to guards?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Navigate to the Messages tab. You can compose a memo, select a specific guard or broadcast to all guards simultaneously.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg text-blue-300">How do I search for a specific bus history?</h4>
+                    <h4 className="font-medium text-lg text-blue-200">How do I search for a specific bus history?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Use the global search bar at the top of your dashboard, or scroll to the Log History Table on the Reports page to filter by Bus Number.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg text-blue-300">How are guards assigned to specific gates?</h4>
+                    <h4 className="font-medium text-lg text-blue-200">How are guards assigned to specific gates?</h4>
                     <p className="mt-3 text-slate-400 leading-relaxed">Go to Guard Management to add or edit profiles. You can assign them specifically to "gate no. 1", "parking gate", etc.</p>
                   </div>
                 </div>

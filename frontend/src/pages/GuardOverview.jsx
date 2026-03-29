@@ -58,7 +58,7 @@ export default function GuardOverview() {
 
         <div className="grid gap-6 sm:grid-cols-2">
           {quickActions.map((action) => (
-            <div key={action.title} className="glass-card interactive-card p-6 flex flex-col items-start border border-white/20 dark:border-white/10 shadow-sm">
+            <div key={action.title} className="glass-card interactive-card p-6 flex flex-col h-full border border-white/20 dark:border-white/10 shadow-sm">
               <div className="p-3 bg-teal-50 dark:bg-teal-900/30 rounded-xl">
                 <ClipboardList className="h-6 w-6 text-teal-600 dark:text-teal-400" />
               </div>
@@ -66,7 +66,7 @@ export default function GuardOverview() {
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 flex-1">{action.description}</p>
               <Link 
                 to={action.href}
-                className="mt-6 w-full text-center px-4 py-2 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-white/40 dark:border-white/10 rounded-xl font-semibold text-slate-800 dark:text-slate-200 transition"
+                className="mt-auto w-full text-center px-4 py-2 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-white/40 dark:border-white/10 rounded-xl font-semibold text-slate-800 dark:text-slate-200 transition"
               >
                 Open Details
               </Link>

@@ -25,20 +25,20 @@ export function TopNav({ title, subtitle, onMenuClick }) {
             </button>
           )}
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">{title}</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{subtitle}</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal-700">{title}</p>
+            <h1 className="mt-0.5 text-xl font-semibold tracking-tight text-slate-950">{subtitle}</h1>
           </div>
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
           <div className="relative hidden w-full max-w-xl lg:block">
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search buses, routes, guards, or alerts"
               value={searchQuery || ""}
               onChange={(e) => setSearchQuery && setSearchQuery(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-teal-500 focus:bg-white"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-teal-500 focus:bg-white focus:shadow-sm"
             />
           </div>
 
@@ -58,7 +58,7 @@ export function TopNav({ title, subtitle, onMenuClick }) {
             {isAdmin && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />}
           </button>
 
-          <div className="flex items-center gap-3 border-l border-slate-200 pl-4">
+          <div className="flex items-center gap-4 border-l border-slate-200 pl-4">
             <div className="hidden text-right md:block">
               <p className="text-sm font-semibold text-slate-950">{session?.name ?? "Campus Operations"}</p>
               <p className="text-xs text-slate-500">{session?.title ?? "Smart Bus Monitoring System"}</p>
@@ -71,7 +71,7 @@ export function TopNav({ title, subtitle, onMenuClick }) {
                 logout();
                 navigate("/");
               }}
-              className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+              className="ml-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
             >
               Logout
             </button>
