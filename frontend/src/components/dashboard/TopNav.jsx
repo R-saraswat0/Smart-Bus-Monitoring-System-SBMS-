@@ -1,9 +1,9 @@
-import { Bell, Mail, Search } from "lucide-react";
+import { Bell, Mail, Search, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useData } from "../../context/DataContext";
 
-export function TopNav({ title, subtitle }) {
+export function TopNav({ title, subtitle, onMenuClick }) {
   const { session, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,9 +15,19 @@ export function TopNav({ title, subtitle }) {
   return (
     <header className="border-b border-slate-200 bg-white px-6 py-5">
       <div className="flex flex-wrap items-center justify-between gap-6">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">{title}</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{subtitle}</h1>
+        <div className="flex items-center gap-4">
+          {onMenuClick && (
+            <button
+              onClick={onMenuClick}
+              className="xl:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          )}
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">{title}</p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{subtitle}</h1>
+          </div>
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">

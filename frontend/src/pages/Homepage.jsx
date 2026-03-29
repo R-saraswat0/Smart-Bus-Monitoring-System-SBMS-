@@ -340,7 +340,7 @@ export default function Homepage() {
             <div className="mt-20 text-center pb-8 border-t border-slate-800 pt-12">
               <h3 className="text-xl font-medium text-slate-300 mb-6">Help us improve Campus Mobility!</h3>
               <a 
-                href="#" 
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdnw9Kxi1HMHEIm7p4xRAlcN-7ErU1Yp5f6OHUq1G1h1xM6ZQ/viewform?usp=publish-editor" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-2xl bg-teal-500 px-8 py-4 text-lg font-bold text-slate-950 shadow-xl transition-all hover:-translate-y-1 hover:bg-teal-400 hover:shadow-teal-500/25"
