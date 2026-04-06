@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Bus, CheckCircle2, Clock3, ShieldAlert, Users, LogIn, LogOut, ArrowRight } from "lucide-react";
 import { useData } from "../context/DataContext";
 import { guardProfile } from "../data/sbmsData";
+import StudentVerificationModal from "../components/dashboard/StudentVerificationModal";
 
 function getCurrentClock() {
   return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -13,7 +14,8 @@ function getCurrentDate() {
 
 export default function GuardLogEntry() {
   const { buses, addLog, addAlert, logs, updateBus } = useData();
-  const [mode, setMode] = useState("arrival"); // 'arrival' or 'departure'
+  const [mode, setMode] = useState("arrival");
+  const [activeSession, setActiveSession] = useState(null);
   const [form, setForm] = useState({
     busNumber: buses[0]?.busNumber ?? "",
     occupancy: "0",
@@ -68,6 +70,13 @@ export default function GuardLogEntry() {
 
     addLog(newLog);
     updateBus(selectedBus.busNumber, { status: busStatus });
+
+    if (mode === "arrival") {
+      setActiveSession({
+        logId: newLog.id,
+        busNumber: newLog.busNumber
+      });
+    }
 
     setForm((current) => ({
       ...current,
@@ -249,6 +258,13 @@ export default function GuardLogEntry() {
           </div>
         </div>
       </div>
+      {activeSession && (
+        <StudentVerificationModal 
+          logId={activeSession.logId}
+          busNumber={activeSession.busNumber}
+          onClose={() => setActiveSession(null)}
+        />
+      )}
     </div>
   );
 }
