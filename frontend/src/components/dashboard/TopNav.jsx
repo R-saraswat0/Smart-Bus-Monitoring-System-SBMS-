@@ -2,6 +2,7 @@ import { Bell, Mail, Search, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useData } from "../../context/DataContext";
+import { LanguageSwitcher } from "../LanguageSwitcher";
 
 export function TopNav({ title, subtitle, onMenuClick }) {
   const { session, logout } = useAuth();
@@ -31,6 +32,10 @@ export function TopNav({ title, subtitle, onMenuClick }) {
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
+          <div className="border-r border-slate-200 pr-4 mt-1 hidden sm:block">
+            <LanguageSwitcher />
+          </div>
+          
           <div className="relative hidden w-full max-w-xl lg:block">
             <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
             <input
@@ -57,6 +62,10 @@ export function TopNav({ title, subtitle, onMenuClick }) {
             <Bell className="h-5 w-5" />
             {isAdmin && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />}
           </button>
+
+          <div className="sm:hidden -mr-2">
+            <LanguageSwitcher />
+          </div>
 
           <div className="flex items-center gap-4 border-l border-slate-200 pl-4">
             <div className="hidden text-right md:block">

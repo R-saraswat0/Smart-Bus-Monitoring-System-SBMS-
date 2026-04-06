@@ -14,6 +14,7 @@ import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 const features = [
   {
@@ -63,12 +64,26 @@ export default function Homepage() {
             <a href="#activity" className="transition hover:text-slate-900">Activity</a>
           </nav>
 
-          <div className="flex items-center gap-3">
-            <Button asChild variant="outline" className="hidden border-slate-300 text-slate-800 hover:bg-slate-100 sm:inline-flex">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden sm:block border-r border-slate-200 pr-3 mr-1">
+               <LanguageSwitcher />
+            </div>
+            {/* Show on mobile */}
+            <div className="sm:hidden mr-1">
+               <LanguageSwitcher />
+            </div>
+            
+            <Button asChild variant="outline" className="hidden sm:inline-flex border-slate-300 text-slate-800 hover:bg-slate-100">
               <Link to={session?.role === "guard" ? "/guard" : "/login/guard"}>Guard module</Link>
             </Button>
-            <Button asChild className="bg-slate-900 text-white hover:bg-slate-800">
-              <Link to={session?.role === "admin" ? "/admin" : "/login/admin"}>Open admin module</Link>
+            <Button asChild className="bg-slate-900 text-white hover:bg-slate-800 text-xs sm:text-sm px-3 sm:px-4">
+              <Link to={session?.role === "admin" ? "/admin" : "/login/admin"}>
+                <span className="hidden sm:inline">Open admin module</span>
+                <span className="sm:hidden">Admin</span>
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="sm:hidden border-slate-300 text-slate-800 text-xs px-3">
+              <Link to={session?.role === "guard" ? "/guard" : "/login/guard"}>Guard</Link>
             </Button>
           </div>
         </div>

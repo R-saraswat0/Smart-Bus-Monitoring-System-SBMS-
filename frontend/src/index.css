@@ -75,3 +75,20 @@
     @apply bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border outline-none border-white/50 dark:border-white/10 focus:border-blue-500/80 focus:ring-4 focus:ring-blue-500/30 shadow-inner dark:shadow-[inset_0_2px_6px_rgba(0,0,0,0.4)] transition-all duration-300 rounded-[1.25rem] px-5 py-3.5;
   }
 }
+
+/* Google Translate Overrides */
+.skiptranslate, 
+.skiptranslate iframe, 
+.goog-te-banner-frame, 
+#goog-te-banner-frame,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf-ti6hGc {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+html, body {
+  top: 0px !important;
+  margin-top: 0px !important;
+  position: relative !important;
+}

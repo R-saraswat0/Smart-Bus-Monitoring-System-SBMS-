@@ -18,7 +18,7 @@ export default function AdminReports() {
     });
   }, []);
 
-  const handleExport = () => {
+  const handleExport = (filename = "route_performance.csv") => {
     const csvContent = "data:text/csv;charset=utf-8," 
       + "Route,Punctuality,Average Occupancy,Incidents\n" 
       + routePerformance.map(r => `${r.route},${r.punctuality},${r.averageOccupancy},${r.incidents}`).join("\n");
@@ -26,7 +26,7 @@ export default function AdminReports() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "route_performance.csv");
+    link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -114,9 +114,9 @@ export default function AdminReports() {
           <div className="bg-white/40 dark:bg-slate-800/40 border border-white/40 dark:border-white/5 rounded-3xl p-6 shadow-inner">
             <p className="text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Available exports</p>
             <div className="mt-5 space-y-4 text-sm font-medium text-slate-800 dark:text-slate-200">
-              <p className="flex items-center gap-3 p-3 bg-white/50 dark:bg-slate-900/50 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 shadow-sm"><FileSpreadsheet className="h-5 w-5 text-blue-500" /> Daily bus register</p>
-              <p className="flex items-center gap-3 p-3 bg-white/50 dark:bg-slate-900/50 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 shadow-sm"><FileSpreadsheet className="h-5 w-5 text-rose-500" /> Delay exception list</p>
-              <p className="flex items-center gap-3 p-3 bg-white/50 dark:bg-slate-900/50 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 shadow-sm"><FileSpreadsheet className="h-5 w-5 text-emerald-500" /> Route occupancy summary</p>
+              <p onClick={() => handleExport("daily_bus_register.csv")} className="flex items-center gap-3 p-3 bg-white/50 dark:bg-slate-900/50 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 shadow-sm"><FileSpreadsheet className="h-5 w-5 text-blue-500" /> Daily bus register</p>
+              <p onClick={() => handleExport("delay_exception_list.csv")} className="flex items-center gap-3 p-3 bg-white/50 dark:bg-slate-900/50 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 shadow-sm"><FileSpreadsheet className="h-5 w-5 text-rose-500" /> Delay exception list</p>
+              <p onClick={() => handleExport("route_occupancy_summary.csv")} className="flex items-center gap-3 p-3 bg-white/50 dark:bg-slate-900/50 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 shadow-sm"><FileSpreadsheet className="h-5 w-5 text-emerald-500" /> Route occupancy summary</p>
             </div>
           </div>
           <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-slate-800/60 dark:to-indigo-900/20 border border-indigo-100 dark:border-indigo-500/10 rounded-3xl p-6 flex flex-col justify-center shadow-inner">
