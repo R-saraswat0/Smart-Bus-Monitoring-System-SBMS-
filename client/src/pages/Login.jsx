@@ -30,10 +30,10 @@ export default function Login() {
   const { role = "guard" } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, demoUsers, session } = useAuth();
+  const { login, session } = useAuth();
   const config = roleContent[role] ?? roleContent.guard;
-  const [email, setEmail] = useState(demoUsers[role]?.email ?? demoUsers.guard.email);
-  const [password, setPassword] = useState(demoUsers[role]?.password ?? demoUsers.guard.password);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   if (session?.role === role) {
@@ -82,18 +82,14 @@ export default function Login() {
               </p>
             </div>
 
-            {/* Demo Credentials Box */}
+            {/* Secure Access Box */}
             <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 sm:rounded-[2rem] sm:p-8">
               <h3 className={`mb-4 text-[11px] font-semibold tracking-[0.22em] ${config.accent}`}>
-                Demo Credentials
+                Secure Access
               </h3>
-              <p className="mb-6 text-sm leading-relaxed text-gray-400">
-                Use the preset credentials below or change them manually for quick frontend testing.
+              <p className="text-sm leading-relaxed text-gray-400">
+                Please enter your registered credentials to access the system. Contact the system administrator if you are unable to login.
               </p>
-              <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <p className="text-sm font-medium text-white/85">Email: {demoUsers[role]?.email}</p>
-                <p className="mt-2 text-sm font-medium text-white/85">Password: {demoUsers[role]?.password}</p>
-              </div>
             </div>
           </div>
 
@@ -106,7 +102,7 @@ export default function Login() {
               <div>
                 <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Sign in to continue</h2>
                 <p className="mt-1 text-sm text-gray-400">
-                  Frontend-only mock auth for the selected role.
+                  Secure access for the selected role.
                 </p>
               </div>
             </div>

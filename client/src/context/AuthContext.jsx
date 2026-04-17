@@ -2,22 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const AUTH_STORAGE_KEY = "sbms-auth";
 
-const demoUsers = {
-  admin: {
-    role: "admin",
-    name: "Anita Reddy",
-    title: "Transport Admin",
-    email: "admin@sbms.local",
-    password: "admin123",
-  },
-  guard: {
-    role: "guard",
-    name: "Rajesh Kumar",
-    title: "Main Gate Guard",
-    email: "guard@sbms.local",
-    password: "guard123",
-  },
-};
 
 const AuthContext = createContext(null);
 
@@ -73,7 +57,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ session, login, logout, demoUsers }}>
+    <AuthContext.Provider value={{ session, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
