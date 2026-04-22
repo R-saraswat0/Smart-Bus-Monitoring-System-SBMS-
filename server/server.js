@@ -22,6 +22,7 @@ const allowedOrigins = [
   'http://localhost:5175',
   'http://localhost:4173',
   'https://smart-bus-monitoring-system-sbms.onrender.com',
+  'https://smart-bus-monitoring-system-sbms.vercel.app',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
