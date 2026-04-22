@@ -1,0 +1,19 @@
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
+export default function ProtectedRoute({ role }) {
+  const { session, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) return null;
+
+  if (!session) {
+    return <Navigate to={`/login/${role}`} replace state={{ from: location.pathname }} />;
+  }
+
+  if (session.role !== role) {
+    return <Navigate to={`/${session.role}`} replace />;
+  }
+
+  return <Outlet />;
+}
