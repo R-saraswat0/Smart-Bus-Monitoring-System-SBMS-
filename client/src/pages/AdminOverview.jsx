@@ -9,34 +9,19 @@ export default function AdminOverview() {
   const { buses, logs } = useData();
 
   const stats = useMemo(() => {
-    let onCampus = 0;
-    let departed = 0;
-    let incoming = 0;
-    let late = 0;
-    let capacityAlert = 0;
-
-    buses.forEach(bus => {
-      // Assign exact categories to sum up to total
-      if (bus.status === 'overcrowded' || bus.health === 'warning') {
-        capacityAlert++;
-      } else if (bus.status === 'late') {
-        late++;
-      } else if (bus.status === 'departed') {
-        departed++;
-      } else if (bus.status === 'incoming' || bus.status === 'standby') {
-        incoming++;
-      } else {
-        onCampus++;
-      }
-    });
+    const onCampus    = buses.filter(b => b.status === 'on-campus').length;
+    const departed    = buses.filter(b => b.status === 'departed').length;
+    const incoming    = buses.filter(b => b.status === 'incoming' || b.status === 'standby').length;
+    const late        = buses.filter(b => b.status === 'late').length;
+    const capacityAlert = buses.filter(b => b.status === 'overcrowded' || b.health === 'warning').length;
 
     return [
-      { title: "Total Buses", value: buses.length, icon: Bus, gradient: "bg-gradient-to-r from-teal-500 via-emerald-500 to-green-600 animate-bg-pan" },
-      { title: "Buses On Campus", value: onCampus, icon: Users, gradient: "bg-gradient-to-bl from-fuchsia-600 via-purple-500 to-pink-500 animate-bg-pan" },
-      { title: "Departed Buses", value: departed, icon: ArrowRightLeft, gradient: "bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 animate-bg-pan" },
-      { title: "Incoming Buses", value: incoming, icon: MapPin, gradient: "bg-gradient-to-tl from-amber-400 via-orange-500 to-red-500 animate-bg-pan" },
-      { title: "Late Arrival", value: late, icon: Clock, gradient: "bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 animate-bg-pan" },
-      { title: "Capacity Alert", value: capacityAlert, icon: AlertTriangle, gradient: "bg-gradient-to-tr from-rose-600 via-red-600 to-orange-500 animate-bg-pan" },
+      { title: "Total Buses",    value: buses.length,  icon: Bus,           gradient: "bg-gradient-to-r from-teal-500 via-emerald-500 to-green-600 animate-bg-pan" },
+      { title: "Buses On Campus", value: onCampus,     icon: Users,         gradient: "bg-gradient-to-bl from-fuchsia-600 via-purple-500 to-pink-500 animate-bg-pan" },
+      { title: "Departed Buses", value: departed,      icon: ArrowRightLeft, gradient: "bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 animate-bg-pan" },
+      { title: "Incoming Buses", value: incoming,      icon: MapPin,        gradient: "bg-gradient-to-tl from-amber-400 via-orange-500 to-red-500 animate-bg-pan" },
+      { title: "Late Arrivals",  value: late,          icon: Clock,         gradient: "bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 animate-bg-pan" },
+      { title: "Capacity Alerts", value: capacityAlert, icon: AlertTriangle, gradient: "bg-gradient-to-tr from-rose-600 via-red-600 to-orange-500 animate-bg-pan" },
     ];
   }, [buses]);
 
@@ -68,7 +53,7 @@ export default function AdminOverview() {
         <div className="glass-panel px-6 py-3 text-sm font-semibold text-slate-800 dark:text-slate-200 shadow-sm flex items-center gap-4">
           <div className="flex items-center gap-2">
             <MapPin className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            <span className="text-2xl font-bold text-slate-900 dark:text-white">148</span> Routes Done
+            <span className="text-2xl font-bold text-slate-900 dark:text-white">{logs.length}</span> Routes Done
           </div>
           <div className="w-px h-8 bg-slate-300 dark:bg-slate-700"></div>
           <div className="flex items-center gap-2">

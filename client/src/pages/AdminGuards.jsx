@@ -1,4 +1,4 @@
-import { BadgeCheck, Clock3, Shield, Users, Plus, Trash2, MapPin } from "lucide-react";
+import { BadgeCheck, Clock3, Shield, Users, Plus, Trash2, MapPin, Mail } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useData } from "../context/DataContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -182,7 +182,7 @@ export default function AdminGuards() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-              key={guard.id}
+              key={guard._id || guard.id}
               className="glass-card interactive-card p-6 border border-white/20 dark:border-white/10"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
@@ -207,18 +207,20 @@ export default function AdminGuards() {
                 </button>
               </div>
 
-              <div className="mt-8 grid gap-4 grid-cols-3">
-                <div className="bg-white/40 dark:bg-slate-800/40 p-4 rounded-2xl border border-white/30 dark:border-white/5">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">ID</p>
-                  <p className="mt-1 font-semibold text-slate-900 dark:text-white truncate">{guard.id}</p>
-                </div>
-                <div className="bg-white/40 dark:bg-slate-800/40 p-4 rounded-2xl border border-white/30 dark:border-white/5">
+              <div className="mt-6 grid gap-3 grid-cols-2 sm:grid-cols-4">
+                <div className="bg-white/40 dark:bg-slate-800/40 p-3 rounded-2xl border border-white/30 dark:border-white/5">
                   <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">Shift</p>
-                  <p className="mt-1 font-semibold text-slate-900 dark:text-white truncate">{guard.shift}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-white truncate">{guard.shift}</p>
                 </div>
-                <div className="bg-white/40 dark:bg-slate-800/40 p-4 rounded-2xl border border-white/30 dark:border-white/5">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">Duty Time</p>
-                  <p className="mt-1 font-semibold text-slate-900 dark:text-white truncate">{guard.shift === "Morning Shift" ? "06:00 AM - 08:00 AM" : guard.shift === "Day Shift" ? "10:00 AM - 12:00 PM" : guard.shift === "Evening Shift" ? "04:00 PM - 06:00 PM" : "08:00 PM - 10:00 PM"}</p>
+                <div className="bg-white/40 dark:bg-slate-800/40 p-3 rounded-2xl border border-white/30 dark:border-white/5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">Duty Hours</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-white truncate">
+                    {guard.shift === "Morning Shift" ? "06:00–08:00 AM" : guard.shift === "Day Shift" ? "10:00 AM–12:00 PM" : guard.shift === "Evening Shift" ? "04:00–06:00 PM" : "08:00–10:00 PM"}
+                  </p>
+                </div>
+                <div className="col-span-2 bg-white/40 dark:bg-slate-800/40 p-3 rounded-2xl border border-white/30 dark:border-white/5">
+                  <p className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide"><Mail className="h-3 w-3" /> Login Email</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-white truncate">{guard.email || "—"}</p>
                 </div>
               </div>
             </motion.div>

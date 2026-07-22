@@ -17,9 +17,17 @@ export const DataProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const fetchAll = useCallback(async () => {
     try {
+      setError(null);
       const [busData, logData, guardData, alertData, msgData] = await Promise.all([
         apiFetch("/buses"),
         apiFetch("/logs"),
@@ -33,7 +41,7 @@ export const DataProvider = ({ children }) => {
       setAlerts(alertData);
       setMessages(msgData);
     } catch (err) {
-      console.error("Failed to fetch data:", err);
+      setError(err.message || "Failed to load data");
     } finally {
       setLoading(false);
     }
@@ -45,11 +53,13 @@ export const DataProvider = ({ children }) => {
   const addBus = async (bus) => {
     const created = await apiFetch("/buses", { method: "POST", body: JSON.stringify(bus) });
     setBuses((prev) => [...prev, created]);
+    showToast(`Bus ${created.busNumber} added successfully`);
   };
 
   const removeBus = async (busNumber) => {
     await apiFetch(`/buses/${busNumber}`, { method: "DELETE" });
     setBuses((prev) => prev.filter((b) => b.busNumber !== busNumber));
+    showToast(`Bus ${busNumber} removed`, "info");
   };
 
   const updateBus = async (busNumber, updates) => {
@@ -61,29 +71,31 @@ export const DataProvider = ({ children }) => {
   const addGuard = async (guard) => {
     const created = await apiFetch("/guards", { method: "POST", body: JSON.stringify(guard) });
     setGuards((prev) => [...prev, created]);
+    showToast(`Guard ${created.name} added successfully`);
   };
 
   const removeGuard = async (id) => {
     await apiFetch(`/guards/${id}`, { method: "DELETE" });
     setGuards((prev) => prev.filter((g) => g.id !== id && g._id !== id));
+    showToast("Guard removed", "info");
   };
 
   // --- Logs ---
   const addLog = async (log) => {
     const created = await apiFetch("/logs", { method: "POST", body: JSON.stringify(log) });
     setLogs((prev) => [created, ...prev]);
-    // refresh buses status
     const busData = await apiFetch("/buses");
     setBuses(busData);
-    // refresh alerts
     const alertData = await apiFetch("/alerts");
     setAlerts(alertData);
+    showToast("Log submitted successfully");
     return created;
   };
 
   const removeLog = async (id) => {
     await apiFetch(`/logs/${id}`, { method: "DELETE" });
     setLogs((prev) => prev.filter((l) => l.id !== id && l._id !== id));
+    showToast("Log deleted", "info");
   };
 
   // --- Alerts ---
@@ -95,23 +107,26 @@ export const DataProvider = ({ children }) => {
   const removeAlert = async (id) => {
     await apiFetch(`/alerts/${id}`, { method: "DELETE" });
     setAlerts((prev) => prev.filter((a) => a.id !== id && a._id !== id));
+    showToast("Alert dismissed", "info");
   };
 
   const resolveAlert = async (id) => {
     const updated = await apiFetch(`/alerts/${id}/resolve`, { method: "PATCH" });
-    setAlerts((prev) => prev.map((a) => (a.id === id || a._id === id) ? updated : a));
+    setAlerts((prev) => prev.map((a) => (a.id === id || a._id === id) ? { ...a, ...updated } : a));
+    showToast("Alert marked as resolved");
   };
 
   // --- Messages ---
   const addMessage = async (msg) => {
     const created = await apiFetch("/messages", { method: "POST", body: JSON.stringify(msg) });
     setMessages((prev) => [created, ...prev]);
+    showToast("Message sent successfully");
   };
 
   return (
     <DataContext.Provider value={{
       buses, guards, alerts, logs, messages,
-      loading, searchQuery, setSearchQuery,
+      loading, error, toast, searchQuery, setSearchQuery,
       addBus, removeBus, updateBus,
       addGuard, removeGuard,
       addLog, removeLog,

@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Download, Filter } from "lucide-react";
+import { Download, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useData } from "../../context/DataContext";
+
+const PAGE_SIZE = 10;
 
 export function LogHistoryTable({ logs }) {
   const [filterType, setFilterType] = useState("all");
@@ -22,6 +24,8 @@ export function LogHistoryTable({ logs }) {
       : "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400";
   };
 
+  const [page, setPage] = useState(1);
+
   const { searchQuery } = useData();
 
   const filteredLogs = logs.filter((log) => {
@@ -33,6 +37,10 @@ export function LogHistoryTable({ logs }) {
       log.guard.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesType && matchesBus && matchesGuard && matchesGlobal;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredLogs.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pagedLogs = filteredLogs.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
@@ -81,7 +89,7 @@ export function LogHistoryTable({ logs }) {
 
         {(filterType !== "all" || searchBus || searchGuard) && (
           <button
-            onClick={() => { setFilterType("all"); setSearchBus(""); setSearchGuard(""); }}
+            onClick={() => { setFilterType("all"); setSearchBus(""); setSearchGuard(""); setPage(1); }}
             className="rounded-lg px-3 py-1.5 text-sm text-teal-700 dark:text-teal-400 transition hover:bg-teal-50 dark:hover:bg-teal-900/30"
           >
             Clear Filters
@@ -104,7 +112,7 @@ export function LogHistoryTable({ logs }) {
             </tr>
           </thead>
           <tbody>
-            {filteredLogs.map((log) => (
+            {pagedLogs.map((log) => (
               <tr
                 key={log.id}
                 className={`border-b border-border transition hover:bg-muted/50 ${
@@ -137,6 +145,21 @@ export function LogHistoryTable({ logs }) {
       </div>
 
       {filteredLogs.length === 0 && <div className="py-8 text-center text-muted-foreground">No logs found for the current filters.</div>}
+
+      {filteredLogs.length > PAGE_SIZE && (
+        <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+          <span>{filteredLogs.length} total logs</span>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={safePage === 1} className="p-1.5 rounded-lg hover:bg-muted disabled:opacity-40 transition">
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="font-medium">Page {safePage} of {totalPages}</span>
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={safePage === totalPages} className="p-1.5 rounded-lg hover:bg-muted disabled:opacity-40 transition">
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

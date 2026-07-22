@@ -117,6 +117,12 @@ export default function Login() {
 
               {error ? <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p> : null}
 
+              {loading && (
+                <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                  ⏳ Server is waking up, this may take up to 30 seconds on first login…
+                </p>
+              )}
+
               <Button type="submit" size="lg" disabled={loading} className="w-full bg-slate-900 text-white hover:bg-slate-800">
                 {loading ? "Signing in…" : `Continue as ${role}`}
               </Button>

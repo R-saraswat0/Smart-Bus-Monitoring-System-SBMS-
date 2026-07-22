@@ -52,21 +52,15 @@ export default function AdminReports() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {reportCards.map((card) => {
-          // Replace "Trips" with "Total Buses" in the title
-          let title = card.title;
-          let value = card.value;
-          if (title.toLowerCase() === "daily summary") { // or wherever 'trips' is
-             value = value.replace(/trips/i, "buses");
-          }
-          return (
-            <div key={card.title} className="glass-card interactive-card p-6 border border-white/20 dark:border-white/10 flex flex-col justify-center">
-              <p className="text-xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400">{title}</p>
-              <p className="mt-4 text-4xl font-bold text-slate-900 dark:text-white">{value}</p>
-              <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 font-medium">{card.detail}</p>
-            </div>
-          );
-        })}
+        {reportCards.map((card) => (
+          <div key={card.title} className="glass-card interactive-card p-6 border border-white/20 dark:border-white/10 flex flex-col justify-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400">{card.title}</p>
+            <p className="mt-4 text-4xl font-bold text-slate-900 dark:text-white">
+              {card.title === "Daily summary" ? `${logs.length} logs` : card.value}
+            </p>
+            <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 font-medium">{card.detail}</p>
+          </div>
+        ))}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">

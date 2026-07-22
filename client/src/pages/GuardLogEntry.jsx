@@ -134,13 +134,13 @@ export default function GuardLogEntry() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Log Time</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Log Time (Auto)</label>
                 <div className="relative">
                   <input
-                    type="time"
+                    type="text"
+                    readOnly
                     value={form.time}
-                    onChange={(event) => setForm((current) => ({ ...current, time: event.target.value }))}
-                    className="glass-input w-full font-semibold text-slate-900 dark:text-white pl-11"
+                    className="glass-input w-full font-semibold text-slate-500 dark:text-slate-400 pl-11 cursor-not-allowed opacity-75"
                   />
                   <Clock3 className="h-5 w-5 absolute left-4 top-3 text-slate-400" />
                 </div>
