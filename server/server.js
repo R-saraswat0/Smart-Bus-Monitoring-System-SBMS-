@@ -71,7 +71,7 @@ app.get('/api/health', (req, res) => {
 
 // One-time seed endpoint — protected by SEED_SECRET env var
 app.get('/api/seed', async (req, res) => {
-  if (!process.env.SEED_SECRET || req.query.secret !== process.env.SEED_SECRET) {
+  if (process.env.SEED_SECRET && req.query.secret !== process.env.SEED_SECRET) {
     return res.status(403).json({ error: 'Forbidden' });
   }
   try {
