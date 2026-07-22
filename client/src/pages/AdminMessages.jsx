@@ -7,21 +7,15 @@ export default function AdminMessages() {
   const [newMessage, setNewMessage] = useState("");
   const [receiver, setReceiver] = useState("All Guards");
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-
-    const msg = {
-      id: `MSG-${Date.now()}`,
-      sender: "Transport Admin",
-      receiver,
-      text: newMessage,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-    };
-
-    addMessage(msg);
-    setNewMessage("");
+    try {
+      await addMessage({ receiver, text: newMessage });
+      setNewMessage("");
+    } catch (err) {
+      console.error("Failed to send message:", err);
+    }
   };
 
   return (

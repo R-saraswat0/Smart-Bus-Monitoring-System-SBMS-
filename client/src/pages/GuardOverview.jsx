@@ -1,11 +1,15 @@
-import { CheckCircle2, ClipboardList, Shield, TimerReset, User } from "lucide-react";
+import { CheckCircle2, ClipboardList, Shield, TimerReset } from "lucide-react";
 import { Link } from "react-router-dom";
-import { guardProfile, quickActions } from "../data/sbmsData";
+import { quickActions } from "../data/sbmsData";
 import { useData } from "../context/DataContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function GuardOverview() {
-  const { guards } = useData();
-  const currentGuard = guards.find((guard) => guard.id === guardProfile.id) ?? guards[0];
+  const { logs } = useData();
+  const { session } = useAuth();
+
+  const todayStr = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const myLogsToday = logs.filter((l) => l.guard === session?.name && l.date === todayStr).length;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -30,27 +34,27 @@ export default function GuardOverview() {
             </div>
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.18em] text-teal-700 dark:text-teal-400">Current guard</p>
-              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{currentGuard?.name || guardProfile.name}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{session?.name || "Guard"}</h3>
             </div>
           </div>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl bg-white/40 dark:bg-slate-800/40 p-5 border border-white/30 dark:border-white/5 backdrop-blur-md">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Assigned gate</p>
-              <p className="mt-2 text-xl font-bold text-slate-900 dark:text-white">{currentGuard?.gate || guardProfile.gate}</p>
+              <p className="mt-2 text-xl font-bold text-slate-900 dark:text-white">{session?.gate || "—"}</p>
             </div>
             <div className="rounded-2xl bg-white/40 dark:bg-slate-800/40 p-5 border border-white/30 dark:border-white/5 backdrop-blur-md">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Shift</p>
-              <p className="mt-2 text-xl font-bold text-slate-900 dark:text-white">{currentGuard?.shift || guardProfile.shift}</p>
+              <p className="mt-2 text-xl font-bold text-slate-900 dark:text-white">{session?.shift || "—"}</p>
             </div>
             <div className="rounded-2xl bg-white/40 dark:bg-slate-800/40 p-5 border border-white/30 dark:border-white/5 backdrop-blur-md">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Logs today</p>
-              <p className="mt-2 text-3xl font-bold text-teal-600 dark:text-teal-400">{currentGuard?.logsToday || 0}</p>
+              <p className="mt-2 text-3xl font-bold text-teal-600 dark:text-teal-400">{myLogsToday}</p>
             </div>
             <div className="rounded-2xl bg-white/40 dark:bg-slate-800/40 p-5 border border-white/30 dark:border-white/5 backdrop-blur-md">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">ID Status</p>
-              <p className={`mt-2 text-sm font-bold uppercase tracking-wider px-3 py-1 inline-block rounded-lg mt-3 ${currentGuard?.status === 'active' ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-slate-200 text-slate-700"}`}>
-                {currentGuard?.status || "active"}
+              <p className={`mt-2 text-sm font-bold uppercase tracking-wider px-3 py-1 inline-block rounded-lg mt-3 ${session?.status === 'active' || !session?.status ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-slate-200 text-slate-700"}`}>
+                {session?.status || "active"}
               </p>
             </div>
           </div>

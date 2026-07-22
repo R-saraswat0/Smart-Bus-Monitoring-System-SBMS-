@@ -19,26 +19,29 @@ export default function AdminGuards() {
   const [isAdding, setIsAdding] = useState(false);
   const [newGuard, setNewGuard] = useState({
     name: "",
-    id: "",
+    email: "",
+    password: "",
     dutyTime: "Morning Shift",
     destination: "gate no. 1",
   });
+  const [guardError, setGuardError] = useState("");
 
-  const handleAddGuard = (e) => {
+  const handleAddGuard = async (e) => {
     e.preventDefault();
-    const guardEntry = {
-      id: newGuard.id,
-      name: newGuard.name,
-      shift: newGuard.dutyTime,
-      gate: newGuard.destination,
-      status: "active",
-      logsToday: 0,
-      lastActivity: "Just added"
-    };
-
-    addGuard(guardEntry);
-    setNewGuard({ name: "", id: "", dutyTime: "Morning Shift", destination: "gate no. 1" });
-    setIsAdding(false);
+    setGuardError("");
+    try {
+      await addGuard({
+        name: newGuard.name,
+        email: newGuard.email,
+        password: newGuard.password,
+        shift: newGuard.dutyTime,
+        gate: newGuard.destination,
+      });
+      setNewGuard({ name: "", email: "", password: "", dutyTime: "Morning Shift", destination: "gate no. 1" });
+      setIsAdding(false);
+    } catch (err) {
+      setGuardError(err.message || "Failed to add guard");
+    }
   };
 
   const activeCount = guards.filter((g) => g.status === "active").length;
@@ -88,13 +91,24 @@ export default function AdminGuards() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">ID</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
                   <input
                     required
-                    type="text"
-                    placeholder="e.g. GRD-06"
-                    value={newGuard.id}
-                    onChange={(e) => setNewGuard({ ...newGuard, id: e.target.value })}
+                    type="email"
+                    placeholder="guard@sbms.local"
+                    value={newGuard.email}
+                    onChange={(e) => setNewGuard({ ...newGuard, email: e.target.value })}
+                    className="glass-input w-full"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
+                  <input
+                    required
+                    type="password"
+                    placeholder="Min 6 characters"
+                    value={newGuard.password}
+                    onChange={(e) => setNewGuard({ ...newGuard, password: e.target.value })}
                     className="glass-input w-full"
                   />
                 </div>
@@ -112,7 +126,7 @@ export default function AdminGuards() {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Destination</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Gate</label>
                   <select
                     value={newGuard.destination}
                     onChange={(e) => setNewGuard({ ...newGuard, destination: e.target.value })}
@@ -125,7 +139,8 @@ export default function AdminGuards() {
                   </select>
                 </div>
               </div>
-              <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex justify-end gap-3">
+                {guardError && <p className="text-sm text-rose-600 self-center">{guardError}</p>}
                 <button type="submit" className="glass-button px-6 py-2.5">
                   Save Guard
                 </button>
@@ -184,7 +199,7 @@ export default function AdminGuards() {
                   </div>
                 </div>
                 <button
-                  onClick={() => removeGuard(guard.id)}
+                  onClick={() => removeGuard(guard.id || guard._id)}
                   className="glass-button-danger flex items-center gap-2 px-3 py-1.5 text-sm"
                 >
                   <Trash2 className="h-4 w-4" />

@@ -9,14 +9,20 @@ export default function AdminReports() {
   const { logs } = useData();
 
   // Assuming peakHourData logic is similar locally if we want, or we just keep it simple locally.
-  const peakHourData = useMemo(() => {
-    const hours = ["6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM"];
-    return hours.map((h, i) => {
-      const arrivals = Math.floor(Math.random() * 20) + 5;
-      const late = (i === 4 || i === 7) ? Math.floor(Math.random() * 4) + 1 : 0; 
-      return { hour: h, arrivals, late };
-    });
-  }, []);
+  const peakHourData = useMemo(() => [
+    { hour: "6 AM",  arrivals: 8,  late: 0 },
+    { hour: "7 AM",  arrivals: 15, late: 0 },
+    { hour: "8 AM",  arrivals: 22, late: 0 },
+    { hour: "9 AM",  arrivals: 18, late: 0 },
+    { hour: "10 AM", arrivals: 12, late: 3 },
+    { hour: "11 AM", arrivals: 9,  late: 0 },
+    { hour: "12 PM", arrivals: 11, late: 0 },
+    { hour: "1 PM",  arrivals: 7,  late: 2 },
+    { hour: "2 PM",  arrivals: 14, late: 0 },
+    { hour: "3 PM",  arrivals: 19, late: 0 },
+    { hour: "4 PM",  arrivals: 24, late: 0 },
+    { hour: "5 PM",  arrivals: 16, late: 0 },
+  ], []);
 
   const handleExport = (filename = "route_performance.csv") => {
     const csvContent = "data:text/csv;charset=utf-8," 

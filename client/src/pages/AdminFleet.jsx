@@ -23,24 +23,34 @@ export default function AdminFleet() {
     driverName: "",
     mobileNumber: "",
   });
+  const [busError, setBusError] = useState("");
 
-  const handleAddBus = (e) => {
+  const [busError, setBusError] = useState("");
+
+  const handleAddBus = async (e) => {
     e.preventDefault();
-    const nextId = String(buses.length + 1).padStart(3, "0");
-    
-    const busEntry = {
-      busNumber: nextId,
-      route: `${newBus.routeStart} → GLA`,
-      capacity: parseInt(newBus.capacity) || 0,
-      driver: newBus.driverName,
-      mobileNumber: newBus.mobileNumber,
-      status: "active",
-      health: "good"
-    };
+    setBusError("");
+    const maxNum = buses.reduce((max, b) => {
+      const n = parseInt(b.busNumber.replace(/\D/g, "")) || 0;
+      return n > max ? n : max;
+    }, 0);
+    const nextId = `BUS-${String(maxNum + 1).padStart(3, "0")}`;
 
-    addBus(busEntry);
-    setNewBus({ routeStart: "", capacity: "", driverName: "", mobileNumber: "" });
-    setIsAdding(false);
+    try {
+      await addBus({
+        busNumber: nextId,
+        route: `${newBus.routeStart} → GLA`,
+        capacity: parseInt(newBus.capacity) || 0,
+        driver: newBus.driverName,
+        mobileNumber: newBus.mobileNumber,
+        status: "active",
+        health: "good",
+      });
+      setNewBus({ routeStart: "", capacity: "", driverName: "", mobileNumber: "" });
+      setIsAdding(false);
+    } catch (err) {
+      setBusError(err.message || "Failed to add bus");
+    }
   };
 
   return (
@@ -120,7 +130,8 @@ export default function AdminFleet() {
                   />
                 </div>
               </div>
-              <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex justify-end gap-3">
+                {busError && <p className="text-sm text-rose-600 self-center">{busError}</p>}
                 <button type="submit" className="glass-button px-6 py-2.5">
                   Save Bus
                 </button>
@@ -155,8 +166,7 @@ export default function AdminFleet() {
                   </div>
                 </div>
                 <button
-                  onClick={() => removeBus(bus.busNumber)}
-                  className="glass-button-danger flex items-center gap-2 px-3 py-1.5 text-sm"
+                  onClick={() => removeBus(bus.busNumber)}                  className="glass-button-danger flex items-center gap-2 px-3 py-1.5 text-sm"
                 >
                   <Trash2 className="h-4 w-4" />
                   Remove Bus

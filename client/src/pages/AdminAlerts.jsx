@@ -1,4 +1,4 @@
-import { AlertTriangle, Clock3, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Clock3, ShieldAlert, CheckCircle2, Trash2 } from "lucide-react";
 import { useData } from "../context/DataContext";
 import { useMemo } from "react";
 
@@ -9,7 +9,7 @@ function getSeverityTone(severity) {
 }
 
 export default function AdminAlerts() {
-  const { alerts: allAlerts, searchQuery } = useData();
+  const { alerts: allAlerts, searchQuery, resolveAlert, removeAlert } = useData();
 
   // Remove Fuel Alert option
   const alerts = useMemo(() => {
@@ -85,9 +85,24 @@ export default function AdminAlerts() {
               <span className="rounded-full bg-slate-100/50 dark:bg-slate-800/50 backdrop-blur-md px-4 py-1.5 border border-white/40 dark:border-white/5 shadow-sm">
                 <span className="font-semibold text-slate-500 dark:text-slate-400">Owner:</span> <span className="text-slate-900 dark:text-white font-medium">{alert.owner}</span>
               </span>
-              <span className="rounded-full bg-slate-100/50 dark:bg-slate-800/50 backdrop-blur-md px-4 py-1.5 border border-white/40 dark:border-white/5 shadow-sm text-amber-600 dark:text-amber-400 font-medium font-semibold">
-                Status: pending review
-              </span>
+              {alert.resolved ? (
+                <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-4 py-1.5 font-semibold text-emerald-700 dark:text-emerald-400">
+                  ✓ Resolved
+                </span>
+              ) : (
+                <button
+                  onClick={() => resolveAlert(alert.id || alert._id)}
+                  className="flex items-center gap-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-4 py-1.5 font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-200 transition"
+                >
+                  <CheckCircle2 className="h-4 w-4" /> Mark Resolved
+                </button>
+              )}
+              <button
+                onClick={() => removeAlert(alert.id || alert._id)}
+                className="flex items-center gap-1.5 rounded-full bg-rose-100 dark:bg-rose-900/30 px-4 py-1.5 font-semibold text-rose-700 dark:text-rose-400 hover:bg-rose-200 transition ml-auto"
+              >
+                <Trash2 className="h-4 w-4" /> Dismiss
+              </button>
             </div>
           </div>
         ))}

@@ -1,12 +1,13 @@
 import { MessageSquare, AlertCircle } from "lucide-react";
 import { useData } from "../context/DataContext";
-import { guardProfile } from "../data/sbmsData";
+import { useAuth } from "../context/AuthContext";
 
 export default function GuardMessages() {
   const { messages } = useData();
+  const { session } = useAuth();
 
-  const myMessages = messages.filter(msg => 
-    msg.receiver === "All Guards" || msg.receiver === guardProfile.name
+  const myMessages = messages.filter(msg =>
+    msg.receiver === "All Guards" || msg.receiver === session?.name
   );
 
   return (

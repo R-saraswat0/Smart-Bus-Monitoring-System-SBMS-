@@ -13,10 +13,10 @@ import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { useAuth } from "../context/AuthContext";
-import { useData } from "../context/DataContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { Sun, Moon } from "lucide-react";
+import { fleet as staticFleet, busLogs as staticLogs, alerts as staticAlerts } from "../data/sbmsData";
 
 const features = [
   {
@@ -43,9 +43,7 @@ const features = [
 
 export default function Homepage() {
   const { session } = useAuth();
-  const { buses, logs, alerts } = useData();
   const { dark, toggle } = useTheme();
-  const latestLogs = logs.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#f4f8fb_0%,#ffffff_42%,#eef6f8_100%)] dark:bg-[linear-gradient(180deg,#0f172a_0%,#1e293b_42%,#0f172a_100%)] text-slate-900 dark:text-slate-100">
@@ -128,17 +126,17 @@ export default function Homepage() {
               <div className="mt-10 grid gap-4 sm:grid-cols-3">
                 <Card className="gap-3 border-border bg-card/85 p-5 shadow-sm">
                   <p className="text-sm font-medium text-muted-foreground">Registered buses</p>
-                  <p className="text-3xl font-semibold text-foreground">{buses.length}</p>
+                  <p className="text-3xl font-semibold text-foreground">{staticFleet.length}</p>
                   <p className="text-sm text-muted-foreground">Total in system</p>
                 </Card>
                 <Card className="gap-3 border-border bg-card/85 p-5 shadow-sm">
                   <p className="text-sm font-medium text-muted-foreground">Trips logged</p>
-                  <p className="text-3xl font-semibold text-foreground">{logs.length}</p>
+                  <p className="text-3xl font-semibold text-foreground">{staticLogs.length}</p>
                   <p className="text-sm text-muted-foreground">Across all gates</p>
                 </Card>
                 <Card className="gap-3 border-border bg-card/85 p-5 shadow-sm">
                   <p className="text-sm font-medium text-muted-foreground">Active alerts</p>
-                  <p className="text-3xl font-semibold text-foreground">{alerts?.length || 0}</p>
+                  <p className="text-3xl font-semibold text-foreground">{staticAlerts?.length || 0}</p>
                   <p className="text-sm text-muted-foreground">Triggered cases</p>
                 </Card>
               </div>
@@ -158,7 +156,7 @@ export default function Homepage() {
               </div>
 
               <div className="grid gap-4 px-6 py-6">
-                {buses.slice(0, 3).map((bus) => (
+                {staticFleet.slice(0, 3).map((bus) => (
                   <div key={bus.busNumber} className="rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-white/10">
                     <div className="flex items-start justify-between gap-4">
                       <div>
@@ -270,7 +268,7 @@ export default function Homepage() {
                 </div>
 
                 <div className="mt-6 space-y-4">
-                  {latestLogs.map((log) => (
+                  {staticLogs.slice(0, 3).map((log) => (
                     <div key={log.id} className="rounded-2xl border border-border p-4">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>

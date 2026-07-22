@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Bus, CheckCircle2, Clock3, ShieldAlert, Users, LogIn, LogOut, ArrowRight } from "lucide-react";
 import { useData } from "../context/DataContext";
-import { guardProfile } from "../data/sbmsData";
+import { useAuth } from "../context/AuthContext";
 
 function getCurrentClock() {
   return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -12,7 +12,10 @@ function getCurrentDate() {
 }
 
 export default function GuardLogEntry() {
-  const { buses, addLog, addAlert, logs, updateBus } = useData();
+  const { buses, addLog, logs } = useData();
+  const { session } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [mode, setMode] = useState("arrival"); // 'arrival' or 'departure'
   const [form, setForm] = useState({
     busNumber: buses[0]?.busNumber ?? "",
@@ -31,50 +34,32 @@ export default function GuardLogEntry() {
   const capacity = selectedBus?.capacity ?? 0;
   const isOverCapacity = occupancy > capacity;
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     if (!selectedBus) return;
-
-    // Capacity Logic: Guard cannot manually exceed capacity without alert.
-    // If student count > capacity -> Auto-trigger capacity alert. The system handles validation automatically.
-    if (isOverCapacity) {
-      const newAlert = {
-        id: `ALT-${Math.floor(Math.random() * 900) + 100}`,
-        title: `Capacity exceeded on ${selectedBus.busNumber}`,
-        severity: "high",
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      await addLog({
         busNumber: selectedBus.busNumber,
+        type: mode === "arrival" ? "entry" : "exit",
         time: form.time,
-        owner: guardProfile.name,
-        description: `Occupancy reached ${occupancy} against a capacity of ${capacity} on the ${selectedBus.route} route during ${mode}.`,
-      };
-      addAlert(newAlert);
+        date: getCurrentDate(),
+        gate: session?.gate || "Main Gate",
+        occupancy,
+        isLate: form.isLate,
+      });
+      setForm((current) => ({
+        ...current,
+        occupancy: "0",
+        time: getCurrentClock(),
+        isLate: false,
+      }));
+    } catch (err) {
+      setSubmitError(err.message || "Failed to submit log");
+    } finally {
+      setSubmitting(false);
     }
-
-    const logStatus = isOverCapacity ? "overcrowded" : form.isLate ? "late" : "on-time";
-    const busStatus = isOverCapacity ? "overcrowded" : mode === "arrival" ? (form.isLate ? "late" : "on-campus") : "departed";
-
-    const newLog = {
-      id: `LOG-${1000 + logs.length + 1}`,
-      busNumber: selectedBus.busNumber,
-      guard: guardProfile.name,
-      type: mode === "arrival" ? "entry" : "exit",
-      time: form.time,
-      date: getCurrentDate(),
-      gate: guardProfile.gate,
-      occupancy,
-      capacity: selectedBus.capacity,
-      status: logStatus,
-    };
-
-    addLog(newLog);
-    updateBus(selectedBus.busNumber, { status: busStatus });
-
-    setForm((current) => ({
-      ...current,
-      occupancy: "0",
-      time: getCurrentClock(),
-      isLate: false,
-    }));
   }
 
   return (
@@ -192,8 +177,9 @@ export default function GuardLogEntry() {
               </div>
             </div>
 
-            <button type="submit" className="glass-button w-full flex items-center justify-center gap-2 py-3.5 text-lg shadow-lg">
-              Confirm {mode === "arrival" ? "Arrival" : "Departure"} <ArrowRight className="h-5 w-5" />
+            {submitError && <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{submitError}</p>}
+            <button type="submit" disabled={submitting} className="glass-button w-full flex items-center justify-center gap-2 py-3.5 text-lg shadow-lg disabled:opacity-60">
+              {submitting ? "Submitting…" : <>Confirm {mode === "arrival" ? "Arrival" : "Departure"} <ArrowRight className="h-5 w-5" /></>}
             </button>
           </form>
         </div>
